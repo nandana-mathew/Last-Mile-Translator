@@ -1,6 +1,20 @@
 "# Last-Mile Translator for Government Decisions
 *From policy text → personal understanding*
 
+## 🎯 Quick Start (Demo Mode - No AWS Required)
+
+```bash
+npm install
+cp .env.example .env
+npm start
+```
+
+Open http://localhost:3000 and click **"🚀 Run Demo Analysis"**
+
+That's it! The demo works without any AWS credentials.
+
+---
+
 ## 🎯 The Problem We Solve
 
 Government decisions exist everywhere - circulars, notices, orders - but they're:

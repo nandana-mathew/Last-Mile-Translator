@@ -1,0 +1,117 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║          🎯 LAST-MILE TRANSLATOR - QUICK START              ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────┐
+│  DEMO MODE (No AWS Required)                                 │
+└──────────────────────────────────────────────────────────────┘
+
+  1. Install dependencies:
+     $ npm install
+
+  2. Copy environment file:
+     $ cp .env.example .env
+
+  3. Start the server:
+     $ npm start
+
+  4. Open browser:
+     → http://localhost:3000
+
+  5. Click the button:
+     → "🚀 Run Demo Analysis"
+
+  ✅ That's it! No AWS credentials needed.
+
+┌──────────────────────────────────────────────────────────────┐
+│  WHAT YOU'LL SEE                                             │
+└──────────────────────────────────────────────────────────────┘
+
+  ✓ Plain language summary of government document
+  ✓ Key changes highlighted
+  ✓ Personal impact for different roles
+  ✓ Multi-language translations (Hindi, Marathi)
+  ✓ Extracted entities (dates, organizations)
+  ✓ Professional UI with loading indicators
+
+┌──────────────────────────────────────────────────────────────┐
+│  API ENDPOINTS (All work in demo mode)                       │
+└──────────────────────────────────────────────────────────────┘
+
+  GET  /api/health              → System status
+  GET  /api/demo/analyze        → Complete demo analysis
+  POST /api/documents           → Upload document
+  GET  /api/documents/:id       → Get document
+  GET  /api/documents/:id/translation → Translate
+  POST /api/documents/:id/personalize → Personalize
+
+┌──────────────────────────────────────────────────────────────┐
+│  TESTING                                                     │
+└──────────────────────────────────────────────────────────────┘
+
+  # Health check
+  $ curl http://localhost:3000/api/health
+
+  # Run demo analysis
+  $ curl http://localhost:3000/api/demo/analyze
+
+┌──────────────────────────────────────────────────────────────┐
+│  SWITCHING TO AWS MODE                                       │
+└──────────────────────────────────────────────────────────────┘
+
+  1. Edit .env:
+     DEMO_MODE=false
+     AWS_REGION=us-east-1
+     S3_BUCKET_NAME=your-bucket
+     DYNAMODB_DOCUMENTS_TABLE=government-documents
+     DYNAMODB_USERS_TABLE=user-profiles
+
+  2. Set up AWS resources (see DEPLOYMENT_CHECKLIST.md)
+
+  3. Restart server:
+     $ npm start
+
+┌──────────────────────────────────────────────────────────────┐
+│  DOCUMENTATION                                               │
+└──────────────────────────────────────────────────────────────┘
+
+  📖 DEMO_GUIDE.md              → Complete demo setup guide
+  📖 DEMO_IMPLEMENTATION.md     → Implementation details
+  📖 DEPLOYMENT_CHECKLIST.md    → AWS deployment steps
+  📖 ARCHITECTURE.md            → System architecture
+  📖 QUICK_REFERENCE.md         → Developer reference
+
+┌──────────────────────────────────────────────────────────────┐
+│  TROUBLESHOOTING                                             │
+└──────────────────────────────────────────────────────────────┘
+
+  ❌ Port already in use?
+     → Change PORT=3001 in .env
+
+  ❌ Module not found?
+     → rm -rf node_modules && npm install
+
+  ❌ Demo not working?
+     → Check DEMO_MODE=true in .env
+     → Restart server
+
+┌──────────────────────────────────────────────────────────────┐
+│  PROJECT STATUS                                              │
+└──────────────────────────────────────────────────────────────┘
+
+  ✅ Demo mode implemented
+  ✅ Works without AWS credentials
+  ✅ Professional web interface
+  ✅ Realistic sample data
+  ✅ All endpoints functional
+  ✅ Complete documentation
+  ✅ Production-ready architecture
+  ✅ Hackathon-ready demo
+
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║  🎉 Ready to demo! Run: npm start                           ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝

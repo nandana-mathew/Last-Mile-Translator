@@ -31,6 +31,8 @@ provider:
           Resource:
             - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:DYNAMODB_DOCUMENTS_TABLE}
             - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:DYNAMODB_USERS_TABLE}
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/policy-ingestion-metadata
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/policy-ingestion-metadata/index/*
         - Effect: Allow
           Action:
             - textract:StartDocumentAnalysis
@@ -52,6 +54,14 @@ provider:
         - Effect: Allow
           Action:
             - polly:SynthesizeSpeech
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - events:PutEvents
           Resource: '*'
 
 functions:
@@ -118,3 +128,61 @@ functions:
           path: /api/users/{userId}/profile
           method: get
           cors: true
+
+  scheduledIngestion:
+    handler: src/lambda/ingestionHandlers.scheduledIngestionHandler
+    events:
+      - schedule:
+          rate: cron(0 2 * * ? *)
+          description: Daily policy ingestion at 2 AM UTC
+          enabled: true
+
+  manualIngestion:
+    handler: src/lambda/ingestionHandlers.manualIngestionHandler
+    events:
+      - http:
+          path: /api/ingestion/manual
+          method: post
+          cors: true
+
+  smsNotification:
+    handler: src/lambda/ingestionHandlers.smsNotificationHandler
+    events:
+      - http:
+          path: /api/notifications/sms
+          method: post
+          cors: true
+
+  whatsappNotification:
+    handler: src/lambda/ingestionHandlers.whatsappNotificationHandler
+    events:
+      - http:
+          path: /api/notifications/whatsapp
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    PolicyIngestionMetadataTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: policy-ingestion-metadata
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: policyId
+            AttributeType: S
+          - AttributeName: sourceUrl
+            AttributeType: S
+        KeySchema:
+          - AttributeName: policyId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: url-index
+            KeySchema:
+              - AttributeName: sourceUrl
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
