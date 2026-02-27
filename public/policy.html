@@ -25,7 +25,7 @@
 </head>
 <body>
     <div class="container">
-        <button class="back-btn" onclick="goBack()">← Back to Policies</button>
+        <button class="back-btn" onclick="goBack()" id="backBtn">← Back to Policies</button>
         
         <header>
             <h1 id="policyTitle">Loading...</h1>
@@ -33,7 +33,7 @@
 
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p style="margin-top: 15px; color: #667eea;">Analyzing policy...</p>
+            <p style="margin-top: 15px; color: #667eea;" id="loadingText">Analyzing policy...</p>
         </div>
 
         <div id="content" style="display: none;">
@@ -61,11 +61,46 @@
         const language = params.get('lang') || localStorage.getItem('preferredLanguage') || 'en';
 
         const translations = {
-            en: { summaryTitle: '📋 Summary', changesTitle: '🔄 Key Changes', impactTitle: '👤 Personal Impact' },
-            hi: { summaryTitle: '📋 सारांश', changesTitle: '🔄 मुख्य परिवर्तन', impactTitle: '👤 व्यक्तिगत प्रभाव' },
-            kn: { summaryTitle: '📋 ಸಾರಾಂಶ', changesTitle: '🔄 ಪ್ರಮುಖ ಬದಲಾವಣೆಗಳು', impactTitle: '👤 ವೈಯಕ್ತಿಕ ಪ್ರಭಾವ' },
-            mr: { summaryTitle: '📋 सारांश', changesTitle: '🔄 मुख्य बदल', impactTitle: '👤 वैयक्तिक प्रभाव' },
-            ta: { summaryTitle: '📋 சுருக்கம்', changesTitle: '🔄 முக்கிய மாற்றங்கள்', impactTitle: '👤 தனிப்பட்ட தாக்கம்' }
+            en: { 
+                summaryTitle: '📋 Summary', 
+                changesTitle: '🔄 Key Changes', 
+                impactTitle: '👤 Personal Impact',
+                backBtn: '← Back to Policies',
+                loading: 'Analyzing policy...',
+                errorMsg: 'Error loading policy: '
+            },
+            hi: { 
+                summaryTitle: '📋 सारांश', 
+                changesTitle: '🔄 मुख्य परिवर्तन', 
+                impactTitle: '👤 व्यक्तिगत प्रभाव',
+                backBtn: '← नीतियों पर वापस जाएं',
+                loading: 'नीति का विश्लेषण किया जा रहा है...',
+                errorMsg: 'नीति लोड करने में त्रुटि: '
+            },
+            kn: { 
+                summaryTitle: '📋 ಸಾರಾಂಶ', 
+                changesTitle: '🔄 ಪ್ರಮುಖ ಬದಲಾವಣೆಗಳು', 
+                impactTitle: '👤 ವೈಯಕ್ತಿಕ ಪ್ರಭಾವ',
+                backBtn: '← ನೀತಿಗಳಿಗೆ ಹಿಂತಿರುಗಿ',
+                loading: 'ನೀತಿಯನ್ನು ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...',
+                errorMsg: 'ನೀತಿಯನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ: '
+            },
+            mr: { 
+                summaryTitle: '📋 सारांश', 
+                changesTitle: '🔄 मुख्य बदल', 
+                impactTitle: '👤 वैयक्तिक प्रभाव',
+                backBtn: '← धोरणांवर परत या',
+                loading: 'धोरणाचे विश्लेषण करत आहे...',
+                errorMsg: 'धोरण लोड करताना त्रुटी: '
+            },
+            ta: { 
+                summaryTitle: '📋 சுருக்கம்', 
+                changesTitle: '🔄 முக்கிய மாற்றங்கள்', 
+                impactTitle: '👤 தனிப்பட்ட தாக்கம்',
+                backBtn: '← கொள்கைகளுக்குத் திரும்பு',
+                loading: 'கொள்கையை பகுப்பாய்வு செய்கிறது...',
+                errorMsg: 'கொள்கையை ஏற்றுவதில் பிழை: '
+            }
         };
 
         function goBack() {
@@ -90,6 +125,8 @@
         async function loadPolicy() {
             try {
                 if (translations[language]) {
+                    document.getElementById('backBtn').textContent = translations[language].backBtn;
+                    document.getElementById('loadingText').textContent = translations[language].loading;
                     document.getElementById('summaryTitle').textContent = translations[language].summaryTitle;
                     document.getElementById('changesTitle').textContent = translations[language].changesTitle;
                     document.getElementById('impactTitle').textContent = translations[language].impactTitle;
@@ -120,7 +157,7 @@
                     document.getElementById('content').style.display = 'block';
                 }
             } catch (error) {
-                alert('Error loading policy: ' + error.message);
+                alert((translations[language]?.errorMsg || translations.en.errorMsg) + error.message);
             }
         }
 

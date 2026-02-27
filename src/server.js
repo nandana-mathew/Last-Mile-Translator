@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
+import fetch from 'node-fetch';
 import { config, isAwsConfigured } from './config/awsConfig.js';
 import { processDocument, getDocument } from './handlers/documentHandler.js';
 import { translateDocument, generateVoiceNote } from './handlers/translationHandler.js';
@@ -49,6 +50,33 @@ app.post('/api/translate', async (req, res) => {
 
     if (isDemoMode) {
       await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Map language codes
+      const langMap = {
+        'en': 'en',
+        'hi': 'hi',
+        'kn': 'kn',
+        'mr': 'mr',
+        'ta': 'ta'
+      };
+      
+      const targetLang = langMap[language] || language;
+      
+      // Use Google Translate API (free, no key required)
+      try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data && data[0]) {
+          const translation = data[0].map(item => item[0]).join('');
+          return res.json({ success: true, translation });
+        }
+      } catch (translateError) {
+        console.log('Translation API error:', translateError.message);
+      }
+      
+      // Fallback: return original text
       return res.json({ success: true, translation: text });
     }
 

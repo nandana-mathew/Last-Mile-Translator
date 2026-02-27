@@ -74,7 +74,10 @@
                 subscribeTitle: 'Subscribe for SMS Alerts',
                 subscribeDesc: 'Get notified when new policies are published',
                 phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'Subscribe'
+                submitBtn: 'Subscribe',
+                phoneError: 'Please enter phone number',
+                subscribeSuccess: 'Subscribed successfully! You will receive SMS alerts for new policies.',
+                subscribeFailed: 'Subscription failed: '
             },
             hi: {
                 title: '🌐 सरकारी नीति अपडेट',
@@ -83,7 +86,10 @@
                 subscribeTitle: 'SMS अलर्ट के लिए सदस्यता लें',
                 subscribeDesc: 'नई नीतियां प्रकाशित होने पर सूचित हों',
                 phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'सदस्यता लें'
+                submitBtn: 'सदस्यता लें',
+                phoneError: 'कृपया फोन नंबर दर्ज करें',
+                subscribeSuccess: 'सफलतापूर्वक सदस्यता ली गई! आपको नई नीतियों के लिए SMS अलर्ट प्राप्त होंगे।',
+                subscribeFailed: 'सदस्यता विफल: '
             },
             kn: {
                 title: '🌐 ಸರ್ಕಾರಿ ನೀತಿ ನವೀಕರಣಗಳು',
@@ -92,7 +98,10 @@
                 subscribeTitle: 'SMS ಎಚ್ಚರಿಕೆಗಳಿಗೆ ಚಂದಾದಾರರಾಗಿ',
                 subscribeDesc: 'ಹೊಸ ನೀತಿಗಳು ಪ್ರಕಟವಾದಾಗ ಸೂಚಿಸಲಾಗುತ್ತದೆ',
                 phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'ಚಂದಾದಾರರಾಗಿ'
+                submitBtn: 'ಚಂದಾದಾರರಾಗಿ',
+                phoneError: 'ದಯವಿಟ್ಟು ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ',
+                subscribeSuccess: 'ಯಶಸ್ವಿಯಾಗಿ ಚಂದಾದಾರರಾಗಿದ್ದೀರಿ! ಹೊಸ ನೀತಿಗಳಿಗಾಗಿ ನೀವು SMS ಎಚ್ಚರಿಕೆಗಳನ್ನು ಸ್ವೀಕರಿಸುತ್ತೀರಿ।',
+                subscribeFailed: 'ಚಂದಾದಾರಿಕೆ ವಿಫಲವಾಗಿದೆ: '
             },
             mr: {
                 title: '🌐 सरकारी धोरण अद्यतने',
@@ -101,7 +110,10 @@
                 subscribeTitle: 'SMS अलर्टसाठी सदस्यता घ्या',
                 subscribeDesc: 'नवीन धोरणे प्रकाशित झाल्यावर सूचित व्हा',
                 phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'सदस्यता घ्या'
+                submitBtn: 'सदस्यता घ्या',
+                phoneError: 'कृपया फोन नंबर प्रविष्ट करा',
+                subscribeSuccess: 'यशस्वीरित्या सदस्यता घेतली! तुम्हाला नवीन धोरणांसाठी SMS अलर्ट प्राप्त होतील।',
+                subscribeFailed: 'सदस्यता अयशस्वी: '
             },
             ta: {
                 title: '🌐 அரசு கொள்கை புதுப்பிப்புகள்',
@@ -110,37 +122,12 @@
                 subscribeTitle: 'SMS எச்சரிக்கைகளுக்கு குழுசேர்',
                 subscribeDesc: 'புதிய கொள்கைகள் வெளியிடப்படும்போது அறிவிக்கப்படும்',
                 phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'குழுசேர்'
+                submitBtn: 'குழுசேர்',
+                phoneError: 'தயவுசெய்து தொலைபேசி எண்ணை உள்ளிடவும்',
+                subscribeSuccess: 'வெற்றிகரமாக குழுசேர்ந்தீர்கள்! புதிய கொள்கைகளுக்கான SMS எச்சரிக்கைகளைப் பெறுவீர்கள்.',
+                subscribeFailed: 'குழுசேர்தல் தோல்வியடைந்தது: '
             }
         };
-
-        async function loadPolicies() {
-            try {
-                const response = await fetch(`${API_URL}/api/policies/recent`);
-                const data = await response.json();
-                if (data.success) {
-                    policies = data.policies;
-                    renderPolicies();
-                }
-            } catch (error) {
-                console.error('Failed to load policies:', error);
-            }
-        }
-
-        function renderPolicies() {
-            const feed = document.getElementById('policiesFeed');
-            feed.innerHTML = policies.map(policy => `
-                <div class="policy-card" onclick="viewPolicy('${policy.id}')">
-                    <div class="policy-title">${policy.title}</div>
-                    <div class="policy-meta">
-                        <span class="tag tag-state">${policy.state}</span>
-                        <span class="tag tag-category">${policy.category}</span>
-                        <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
-                    </div>
-                    <p style="color: #666; margin-top: 10px;">${policy.brief}</p>
-                </div>
-            `).join('');
-        }
 
         function setLanguage(lang) {
             currentLanguage = lang;
@@ -203,13 +190,13 @@
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                text: `${policy.title}|||${policy.brief}`,
+                                text: `${policy.title}|||${policy.brief}|||${policy.state}|||${policy.category}`,
                                 language: currentLanguage
                             })
                         });
                         const data = await response.json();
-                        const [title, brief] = data.translation.split('|||');
-                        return { ...policy, title, brief };
+                        const [title, brief, state, category] = data.translation.split('|||');
+                        return { ...policy, title, brief, state, category };
                     } catch {
                         return policy;
                     }
@@ -244,7 +231,7 @@
         async function submitSubscribe() {
             const phone = document.getElementById('phoneInput').value;
             if (!phone) {
-                alert('Please enter phone number');
+                alert(translations[currentLanguage].phoneError);
                 return;
             }
 
@@ -260,11 +247,11 @@
 
                 const data = await response.json();
                 if (data.success) {
-                    alert('Subscribed successfully! You will receive SMS alerts for new policies.');
+                    alert(translations[currentLanguage].subscribeSuccess);
                     closeSubscribe();
                 }
             } catch (error) {
-                alert('Subscription failed: ' + error.message);
+                alert(translations[currentLanguage].subscribeFailed + error.message);
             }
         }
 
