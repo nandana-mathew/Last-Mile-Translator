@@ -1,0 +1,120 @@
+service: last-mile-translator
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ${env:AWS_REGION, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  memorySize: 512
+  timeout: 300
+  environment:
+    AWS_REGION: ${env:AWS_REGION}
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+    DYNAMODB_DOCUMENTS_TABLE: ${env:DYNAMODB_DOCUMENTS_TABLE}
+    DYNAMODB_USERS_TABLE: ${env:DYNAMODB_USERS_TABLE}
+    BEDROCK_MODEL_ID: ${env:BEDROCK_MODEL_ID}
+    BEDROCK_MAX_TOKENS: ${env:BEDROCK_MAX_TOKENS}
+    BEDROCK_TEMPERATURE: ${env:BEDROCK_TEMPERATURE}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+          Resource: arn:aws:s3:::${env:S3_BUCKET_NAME}/*
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+          Resource:
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:DYNAMODB_DOCUMENTS_TABLE}
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${env:DYNAMODB_USERS_TABLE}
+        - Effect: Allow
+          Action:
+            - textract:StartDocumentAnalysis
+            - textract:GetDocumentAnalysis
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - comprehend:DetectEntities
+            - comprehend:DetectKeyPhrases
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - bedrock:InvokeModel
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - translate:TranslateText
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - polly:SynthesizeSpeech
+          Resource: '*'
+
+functions:
+  documentUpload:
+    handler: src/lambda/handlers.documentUploadHandler
+    events:
+      - http:
+          path: /api/documents
+          method: post
+          cors: true
+
+  documentGet:
+    handler: src/lambda/handlers.documentGetHandler
+    events:
+      - http:
+          path: /api/documents/{id}
+          method: get
+          cors: true
+
+  translation:
+    handler: src/lambda/handlers.translationHandler
+    events:
+      - http:
+          path: /api/documents/{id}/translation
+          method: get
+          cors: true
+
+  voice:
+    handler: src/lambda/handlers.voiceHandler
+    events:
+      - http:
+          path: /api/documents/{id}/voice
+          method: post
+          cors: true
+
+  personalize:
+    handler: src/lambda/handlers.personalizeHandler
+    events:
+      - http:
+          path: /api/documents/{id}/personalize
+          method: post
+          cors: true
+
+  compare:
+    handler: src/lambda/handlers.compareHandler
+    events:
+      - http:
+          path: /api/documents/compare
+          method: post
+          cors: true
+
+  profileSave:
+    handler: src/lambda/handlers.profileSaveHandler
+    events:
+      - http:
+          path: /api/users/profile
+          method: post
+          cors: true
+
+  profileGet:
+    handler: src/lambda/handlers.profileGetHandler
+    events:
+      - http:
+          path: /api/users/{userId}/profile
+          method: get
+          cors: true

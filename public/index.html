@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last-Mile Translator - Government Decision Translator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 10px; margin-bottom: 30px; }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2em; opacity: 0.9; }
+        .card { background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .upload-area { border: 3px dashed #667eea; border-radius: 10px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .upload-area:hover { background: #f8f9ff; border-color: #764ba2; }
+        .upload-area.dragover { background: #e8ebff; border-color: #667eea; }
+        input[type="file"] { display: none; }
+        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 5px; font-size: 16px; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .result { margin-top: 20px; padding: 20px; background: #f8f9ff; border-radius: 8px; border-left: 4px solid #667eea; }
+        .loading { text-align: center; padding: 20px; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .profile-form { display: grid; gap: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        label { font-weight: 600; margin-bottom: 5px; color: #333; }
+        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; background: #e8ebff; border: none; border-radius: 5px; cursor: pointer; transition: all 0.3s; }
+        .tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .entity-badge { display: inline-block; padding: 5px 10px; margin: 5px; background: #e8ebff; border-radius: 15px; font-size: 12px; }
+        .voice-player { margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 Last-Mile Translator</h1>
+            <p class="subtitle">From policy text → personal understanding</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('upload')">Upload Document</button>
+            <button class="tab" onclick="switchTab('profile')">User Profile</button>
+            <button class="tab" onclick="switchTab('demo')">Demo</button>
+        </div>
+
+        <div id="upload-tab" class="tab-content active">
+            <div class="card">
+                <h2>Upload Government Document</h2>
+                <p style="margin: 10px 0; color: #666;">Upload a PDF or image of a government circular, notice, or order</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event)">
+                    <p style="font-size: 48px; margin-bottom: 10px;">📄</p>
+                    <p style="font-size: 18px; margin-bottom: 10px;">Click to upload or drag and drop</p>
+                    <p style="color: #666;">PDF, JPG, PNG (Max 10MB)</p>
+                </div>
+
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 15px;">Processing document...</p>
+                </div>
+
+                <div id="result" style="display: none;">
+                    <h3 style="margin-top: 20px;">📋 Analysis Results</h3>
+                    <div class="result">
+                        <h4>Brief Summary</h4>
+                        <p id="summary"></p>
+                        
+                        <h4 style="margin-top: 15px;">Key Entities</h4>
+                        <div id="entities"></div>
+
+                        <div style="margin-top: 20px;">
+                            <label for="language">Translate to:</label>
+                            <select id="language" style="margin: 10px 0;">
+                                <option value="hindi">Hindi</option>
+                                <option value="tamil">Tamil</option>
+                                <option value="telugu">Telugu</option>
+                                <option value="bengali">Bengali</option>
+                                <option value="marathi">Marathi</option>
+                            </select>
+                            <button onclick="translateDocument()">Translate</button>
+                            <button onclick="generateVoice()">Generate Voice Note</button>
+                        </div>
+
+                        <div id="translation" style="display: none; margin-top: 15px;">
+                            <h4>Translation</h4>
+                            <p id="translatedText"></p>
+                        </div>
+
+                        <div id="voiceNote" style="display: none;" class="voice-player">
+                            <h4>Voice Note</h4>
+                            <audio id="audioPlayer" controls style="width: 100%;"></audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profile-tab" class="tab-content">
+            <div class="card">
+                <h2>Create User Profile</h2>
+                <p style="margin: 10px 0; color: #666;">Get personalized explanations based on your profile</p>
+                
+                <form class="profile-form" onsubmit="saveProfile(event)">
+                    <div class="form-group">
+                        <label>Occupation</label>
+                        <input type="text" id="occupation" placeholder="e.g., Farmer, Student, Business Owner">
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" id="state" placeholder="e.g., Maharashtra">
+                    </div>
+                    <div class="form-group">
+                        <label>District</label>
+                        <input type="text" id="district" placeholder="e.g., Pune">
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Language</label>
+                        <select id="preferredLanguage">
+                            <option value="english">English</option>
+                            <option value="hindi">Hindi</option>
+                            <option value="tamil">Tamil</option>
+                            <option value="telugu">Telugu</option>
+                        </select>
+                    </div>
+                    <button type="submit">Save Profile</button>
+                </form>
+
+                <div id="profileResult" style="display: none; margin-top: 20px;">
+                    <div class="result">
+                        <p>✅ Profile saved successfully! User ID: <strong id="userId"></strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="demo-tab" class="tab-content">
+            <div class="card">
+                <h2>Demo: Before & After</h2>
+                
+                <h3 style="margin-top: 20px;">📄 Original Government Document</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; font-family: monospace; font-size: 12px; margin: 10px 0;">
+                    <strong>GOVERNMENT OF MAHARASHTRA</strong><br>
+                    Circular No. 4.2.1/2024<br><br>
+                    Subject: Amendment to subsidy eligibility criteria for marginal farmers under the Agricultural Development Scheme<br><br>
+                    This circular supersedes clause 4.2 of notification dated 15.03.2023 regarding subsidy eligibility criteria. All marginal farmers owning less than 2 hectares of land and having annual income below Rs. 2,00,000 shall be eligible for subsidy under scheme XYZ. Applications must be submitted before 31st March 2026 to the concerned Taluka Agricultural Officer along with land records and income certificate.
+                </div>
+
+                <h3 style="margin-top: 30px;">✨ Our Translation</h3>
+                <div class="result">
+                    <h4>Plain Language Summary</h4>
+                    <p>If you are a small farmer owning less than 2 hectares of land and your yearly income is below Rs. 2 lakhs, you can now apply for a government subsidy. You need to submit your application before March 31, 2026, to your local agricultural office with your land documents and income proof.</p>
+                    
+                    <h4 style="margin-top: 15px;">What Changed?</h4>
+                    <p>This replaces the old rules from March 2023. The main change is in who can apply for the subsidy.</p>
+                    
+                    <h4 style="margin-top: 15px;">What You Need to Do</h4>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Check if you own less than 2 hectares of land</li>
+                        <li>Verify your annual income is below Rs. 2,00,000</li>
+                        <li>Collect your land records and income certificate</li>
+                        <li>Submit application to Taluka Agricultural Officer before March 31, 2026</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentDocumentId = null;
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        const uploadArea = document.getElementById('uploadArea');
+        uploadArea.addEventListener('click', () => document.getElementById('fileInput').click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) uploadDocument(file);
+        });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) uploadDocument(file);
+        }
+
+        async function uploadDocument(file) {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('document', file);
+
+            try {
+                const response = await fetch(`${API_URL}/documents`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentDocumentId = data.documentId;
+                    displayResults(data);
+                } else {
+                    alert('Error processing document: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function displayResults(data) {
+            document.getElementById('summary').textContent = data.summary;
+            
+            const entitiesDiv = document.getElementById('entities');
+            entitiesDiv.innerHTML = '';
+            
+            if (data.analysis.entities.dates.length > 0) {
+                data.analysis.entities.dates.forEach(date => {
+                    entitiesDiv.innerHTML += `<span class="entity-badge">📅 ${date.text}</span>`;
+                });
+            }
+            
+            if (data.analysis.entities.organizations.length > 0) {
+                data.analysis.entities.organizations.forEach(org => {
+                    entitiesDiv.innerHTML += `<span class="entity-badge">🏛️ ${org.text}</span>`;
+                });
+            }
+
+            document.getElementById('result').style.display = 'block';
+        }
+
+        async function translateDocument() {
+            const language = document.getElementById('language').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/documents/${currentDocumentId}/translation?language=${language}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('translatedText').textContent = data.translation;
+                    document.getElementById('translation').style.display = 'block';
+                }
+            } catch (error) {
+                alert('Translation error: ' + error.message);
+            }
+        }
+
+        async function generateVoice() {
+            const summaryText = document.getElementById('summary').textContent;
+            
+            try {
+                const response = await fetch(`${API_URL}/documents/${currentDocumentId}/voice`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: summaryText, language: 'en' })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('audioPlayer').src = data.voiceNote.url;
+                    document.getElementById('voiceNote').style.display = 'block';
+                }
+            } catch (error) {
+                alert('Voice generation error: ' + error.message);
+            }
+        }
+
+        async function saveProfile(event) {
+            event.preventDefault();
+            
+            const profile = {
+                demographics: {
+                    occupation: document.getElementById('occupation').value,
+                    location: {
+                        state: document.getElementById('state').value,
+                        district: document.getElementById('district').value
+                    },
+                    languages: [document.getElementById('preferredLanguage').value]
+                },
+                interests: [],
+                subscriptions: {
+                    documentTypes: ['circular', 'notice'],
+                    deliveryMethod: 'web',
+                    frequency: 'immediate'
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/users/profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(profile)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('userId').textContent = data.userId;
+                    document.getElementById('profileResult').style.display = 'block';
+                }
+            } catch (error) {
+                alert('Profile save error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
