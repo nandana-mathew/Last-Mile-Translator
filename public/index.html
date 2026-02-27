@@ -3,111 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Last-Mile Translator - Government Decision Translator</title>
+    <title>Last-Mile Translator</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 10px; margin-bottom: 30px; }
-        h1 { font-size: 2.5em; margin-bottom: 10px; }
-        .subtitle { font-size: 1.2em; opacity: 0.9; }
-        .card { background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 5px; font-size: 16px; cursor: pointer; transition: transform 0.2s; }
-        button:hover { transform: translateY(-2px); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
-        .demo-button { font-size: 18px; padding: 15px 40px; margin: 20px 0; }
-        .result { margin-top: 20px; padding: 20px; background: #f8f9ff; border-radius: 8px; border-left: 4px solid #667eea; }
-        .loading { text-align: center; padding: 40px; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .section { margin: 20px 0; }
-        .section h3 { color: #667eea; margin-bottom: 10px; }
-        .changes-list { list-style: none; padding: 0; }
-        .changes-list li { padding: 8px 0; padding-left: 25px; position: relative; }
-        .changes-list li:before { content: "✓"; position: absolute; left: 0; color: #667eea; font-weight: bold; }
-        .impact-box { background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #4caf50; }
-        .translation-box { background: #fff3e0; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ff9800; }
-        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 15px; font-size: 14px; font-weight: 600; }
-        .status-demo { background: #e3f2fd; color: #1976d2; }
-        .status-aws { background: #e8f5e9; color: #388e3c; }
-        .info-box { background: #fff9c4; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #fbc02d; }
-        .policy-card { background: white; border-radius: 8px; padding: 20px; margin: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; border-radius: 10px; margin-bottom: 20px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        h1 { font-size: 2em; }
+        .subscribe-btn { background: white; color: #667eea; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        .lang-selector { display: flex; gap: 10px; flex-wrap: wrap; }
+        .lang-btn { padding: 8px 16px; border: 2px solid white; background: transparent; color: white; border-radius: 20px; cursor: pointer; }
+        .lang-btn.active { background: white; color: #667eea; }
+        .policy-card { background: white; border-radius: 8px; padding: 20px; margin: 15px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s; }
         .policy-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-2px); }
-        .policy-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
-        .policy-title { font-size: 18px; font-weight: 600; color: #333; }
-        .policy-meta { display: flex; gap: 10px; margin: 10px 0; }
-        .policy-tag { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .policy-title { font-size: 18px; font-weight: 600; color: #333; margin-bottom: 10px; }
+        .policy-meta { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+        .tag { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
         .tag-state { background: #e3f2fd; color: #1976d2; }
         .tag-category { background: #f3e5f5; color: #7b1fa2; }
         .tag-date { background: #e8f5e9; color: #388e3c; }
-        .impact-high { background: #ffebee; color: #c62828; }
-        .impact-medium { background: #fff3e0; color: #ef6c00; }
-        .lang-selector { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-        .lang-btn { padding: 8px 16px; border: 2px solid #667eea; background: white; color: #667eea; border-radius: 20px; cursor: pointer; transition: all 0.3s; }
-        .lang-btn.active { background: #667eea; color: white; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-content { background: white; margin: 50px auto; padding: 30px; max-width: 500px; border-radius: 10px; }
+        .modal input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        .close-btn { float: right; font-size: 24px; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🌐 Last-Mile Translator</h1>
-            <p class="subtitle">From policy text → personal understanding</p>
-            <div style="margin-top: 15px;">
-                <span id="statusBadge" class="status-badge">Loading...</span>
+            <div class="header-content">
+                <div>
+                    <h1 data-i18n="title">🌐 Government Policy Updates</h1>
+                    <p data-i18n="subtitle">Real-time policy notifications in your language</p>
+                </div>
+                <button class="subscribe-btn" onclick="openSubscribe()" data-i18n="subscribe">📱 Subscribe for SMS</button>
+            </div>
+            <div class="lang-selector" style="margin-top: 15px;">
+                <button class="lang-btn active" onclick="setLanguage('en')">English</button>
+                <button class="lang-btn" onclick="setLanguage('hi')">हिंदी</button>
+                <button class="lang-btn" onclick="setLanguage('kn')">ಕನ್ನಡ</button>
+                <button class="lang-btn" onclick="setLanguage('mr')">मराठी</button>
+                <button class="lang-btn" onclick="setLanguage('ta')">தமிழ்</button>
             </div>
         </header>
 
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2>📰 Recent Government Policies</h2>
-                <div class="lang-selector">
-                    <button class="lang-btn active" onclick="setLanguage('en')" data-lang="en">English</button>
-                    <button class="lang-btn" onclick="setLanguage('hi')" data-lang="hi">हिंदी</button>
-                    <button class="lang-btn" onclick="setLanguage('kn')" data-lang="kn">ಕನ್ನಡ</button>
-                    <button class="lang-btn" onclick="setLanguage('mr')" data-lang="mr">मराठी</button>
-                    <button class="lang-btn" onclick="setLanguage('ta')" data-lang="ta">தமிழ்</button>
-                </div>
-            </div>
-            
-            <div id="policiesFeed"></div>
-        </div>
+        <div id="policiesFeed"></div>
+    </div>
 
-        <div class="card" id="detailsCard" style="display: none;">
-            <button onclick="closeDetails()" style="margin-bottom: 20px;">← Back to Feed</button>
-            
-            <div id="loading" class="loading" style="display: none;">
-                <div class="spinner"></div>
-                <p style="font-size: 18px; color: #667eea;">Analyzing policy...</p>
-            </div>
-
-            <div id="demoResults" style="display: none;">
-                <div class="section">
-                    <h3>📋 Plain Language Summary</h3>
-                    <div class="result">
-                        <p id="plainSummary" style="font-size: 16px; line-height: 1.6;"></p>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h3>🔄 Key Changes</h3>
-                    <ul id="keyChanges" class="changes-list"></ul>
-                </div>
-
-                <div class="section">
-                    <h3>👤 Personal Impact</h3>
-                    <div class="impact-box">
-                        <strong id="impactLabel1">Impact:</strong>
-                        <p id="farmerImpact" style="margin-top: 8px;"></p>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h3>🌍 Translation</h3>
-                    <div class="translation-box">
-                        <p id="translatedText" style="font-size: 16px;"></p>
-                    </div>
-                </div>
-            </div>
+    <div id="subscribeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeSubscribe()">&times;</span>
+            <h2 data-i18n="subscribeTitle">Subscribe for SMS Alerts</h2>
+            <p data-i18n="subscribeDesc">Get notified when new policies are published</p>
+            <input type="tel" id="phoneInput" placeholder="+91XXXXXXXXXX" data-i18n-placeholder="phonePlaceholder">
+            <button class="subscribe-btn" onclick="submitSubscribe()" data-i18n="submitBtn">Subscribe</button>
         </div>
     </div>
 
@@ -116,29 +66,58 @@
         let currentLanguage = 'en';
         let policies = [];
 
-        async function checkHealth() {
-            try {
-                const response = await fetch(`${API_URL}/api/health`);
-                const data = await response.json();
-                
-                const badge = document.getElementById('statusBadge');
-                if (data.demoMode) {
-                    badge.textContent = '🎭 Demo Mode';
-                    badge.className = 'status-badge status-demo';
-                } else if (data.awsConfigured) {
-                    badge.textContent = '☁️ AWS Connected';
-                    badge.className = 'status-badge status-aws';
-                }
-            } catch (error) {
-                console.error('Health check failed:', error);
+        const translations = {
+            en: {
+                title: '🌐 Government Policy Updates',
+                subtitle: 'Real-time policy notifications in your language',
+                subscribe: '📱 Subscribe for SMS',
+                subscribeTitle: 'Subscribe for SMS Alerts',
+                subscribeDesc: 'Get notified when new policies are published',
+                phonePlaceholder: '+91XXXXXXXXXX',
+                submitBtn: 'Subscribe'
+            },
+            hi: {
+                title: '🌐 सरकारी नीति अपडेट',
+                subtitle: 'आपकी भाषा में वास्तविक समय नीति सूचनाएं',
+                subscribe: '📱 SMS के लिए सदस्यता लें',
+                subscribeTitle: 'SMS अलर्ट के लिए सदस्यता लें',
+                subscribeDesc: 'नई नीतियां प्रकाशित होने पर सूचित हों',
+                phonePlaceholder: '+91XXXXXXXXXX',
+                submitBtn: 'सदस्यता लें'
+            },
+            kn: {
+                title: '🌐 ಸರ್ಕಾರಿ ನೀತಿ ನವೀಕರಣಗಳು',
+                subtitle: 'ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ನೈಜ-ಸಮಯ ನೀತಿ ಅಧಿಸೂಚನೆಗಳು',
+                subscribe: '📱 SMS ಗಾಗಿ ಚಂದಾದಾರರಾಗಿ',
+                subscribeTitle: 'SMS ಎಚ್ಚರಿಕೆಗಳಿಗೆ ಚಂದಾದಾರರಾಗಿ',
+                subscribeDesc: 'ಹೊಸ ನೀತಿಗಳು ಪ್ರಕಟವಾದಾಗ ಸೂಚಿಸಲಾಗುತ್ತದೆ',
+                phonePlaceholder: '+91XXXXXXXXXX',
+                submitBtn: 'ಚಂದಾದಾರರಾಗಿ'
+            },
+            mr: {
+                title: '🌐 सरकारी धोरण अद्यतने',
+                subtitle: 'तुमच्या भाषेत रिअल-टाइम धोरण सूचना',
+                subscribe: '📱 SMS साठी सदस्यता घ्या',
+                subscribeTitle: 'SMS अलर्टसाठी सदस्यता घ्या',
+                subscribeDesc: 'नवीन धोरणे प्रकाशित झाल्यावर सूचित व्हा',
+                phonePlaceholder: '+91XXXXXXXXXX',
+                submitBtn: 'सदस्यता घ्या'
+            },
+            ta: {
+                title: '🌐 அரசு கொள்கை புதுப்பிப்புகள்',
+                subtitle: 'உங்கள் மொழியில் நேரடி கொள்கை அறிவிப்புகள்',
+                subscribe: '📱 SMS க்கு குழுசேர்',
+                subscribeTitle: 'SMS எச்சரிக்கைகளுக்கு குழுசேர்',
+                subscribeDesc: 'புதிய கொள்கைகள் வெளியிடப்படும்போது அறிவிக்கப்படும்',
+                phonePlaceholder: '+91XXXXXXXXXX',
+                submitBtn: 'குழுசேர்'
             }
-        }
+        };
 
         async function loadPolicies() {
             try {
                 const response = await fetch(`${API_URL}/api/policies/recent`);
                 const data = await response.json();
-                
                 if (data.success) {
                     policies = data.policies;
                     renderPolicies();
@@ -152,14 +131,11 @@
             const feed = document.getElementById('policiesFeed');
             feed.innerHTML = policies.map(policy => `
                 <div class="policy-card" onclick="viewPolicy('${policy.id}')">
-                    <div class="policy-header">
-                        <div class="policy-title">${policy.title}</div>
-                        <span class="policy-tag impact-${policy.impact}">${policy.impact.toUpperCase()}</span>
-                    </div>
+                    <div class="policy-title">${policy.title}</div>
                     <div class="policy-meta">
-                        <span class="policy-tag tag-state">${policy.state}</span>
-                        <span class="policy-tag tag-category">${policy.category}</span>
-                        <span class="policy-tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                        <span class="tag tag-state">${policy.state}</span>
+                        <span class="tag tag-category">${policy.category}</span>
+                        <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
                     </div>
                     <p style="color: #666; margin-top: 10px;">${policy.brief}</p>
                 </div>
@@ -168,371 +144,148 @@
 
         function setLanguage(lang) {
             currentLanguage = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            
             document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.lang === lang);
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang] && translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+            
+            renderPolicies();
+        }
+
+        async function loadPolicies() {
+            try {
+                const response = await fetch(`${API_URL}/api/policies/recent`);
+                const data = await response.json();
+                if (data.success) {
+                    policies = data.policies;
+                    renderPolicies();
+                }
+            } catch (error) {
+                console.error('Failed to load policies:', error);
+            }
+        }
+
+        async function renderPolicies() {
+            const feed = document.getElementById('policiesFeed');
+            
+            if (currentLanguage === 'en') {
+                feed.innerHTML = policies.map(policy => `
+                    <div class="policy-card" onclick="viewPolicy('${policy.id}')">
+                        <div class="policy-title">${policy.title}</div>
+                        <div class="policy-meta">
+                            <span class="tag tag-state">${policy.state}</span>
+                            <span class="tag tag-category">${policy.category}</span>
+                            <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                        </div>
+                        <p style="color: #666; margin-top: 10px;">${policy.brief}</p>
+                    </div>
+                `).join('');
+            } else {
+                const translatedPolicies = await Promise.all(policies.map(async policy => {
+                    try {
+                        const response = await fetch(`${API_URL}/api/translate`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                text: `${policy.title}|||${policy.brief}`,
+                                language: currentLanguage
+                            })
+                        });
+                        const data = await response.json();
+                        const [title, brief] = data.translation.split('|||');
+                        return { ...policy, title, brief };
+                    } catch {
+                        return policy;
+                    }
+                }));
+                
+                feed.innerHTML = translatedPolicies.map(policy => `
+                    <div class="policy-card" onclick="viewPolicy('${policy.id}')">
+                        <div class="policy-title">${policy.title}</div>
+                        <div class="policy-meta">
+                            <span class="tag tag-state">${policy.state}</span>
+                            <span class="tag tag-category">${policy.category}</span>
+                            <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                        </div>
+                        <p style="color: #666; margin-top: 10px;">${policy.brief}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function viewPolicy(policyId) {
+            window.location.href = `policy.html?id=${policyId}&lang=${currentLanguage}`;
+        }
+
+        function openSubscribe() {
+            document.getElementById('subscribeModal').style.display = 'block';
+        }
+
+        function closeSubscribe() {
+            document.getElementById('subscribeModal').style.display = 'none';
+        }
+
+        async function submitSubscribe() {
+            const phone = document.getElementById('phoneInput').value;
+            if (!phone) {
+                alert('Please enter phone number');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/users/profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        demographics: { phoneNumber: phone, languages: [currentLanguage] },
+                        subscriptions: { documentTypes: ['all'], deliveryMethod: 'sms', frequency: 'immediate' }
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Subscribed successfully! You will receive SMS alerts for new policies.');
+                    closeSubscribe();
+                }
+            } catch (error) {
+                alert('Subscription failed: ' + error.message);
+            }
+        }
+
+        const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+        currentLanguage = savedLang;
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            if (btn.textContent.includes(savedLang === 'en' ? 'English' : savedLang === 'hi' ? 'हिंदी' : savedLang === 'kn' ? 'ಕನ್ನಡ' : savedLang === 'mr' ? 'मराठी' : 'தமிழ்')) {
+                btn.classList.add('active');
+            }
+        });
+        
+        if (savedLang !== 'en') {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[savedLang] && translations[savedLang][key]) {
+                    el.textContent = translations[savedLang][key];
+                }
             });
         }
 
-        async function viewPolicy(policyId) {
-            document.getElementById('detailsCard').style.display = 'block';
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('demoResults').style.display = 'none';
-            window.scrollTo(0, 0);
-
-            try {
-                const policyType = policyId.includes('002') ? 'karnataka' : 'maharashtra';
-                const response = await fetch(`${API_URL}/api/demo/analyze?policy=${policyType}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    document.getElementById('plainSummary').textContent = data.plainLanguageSummary;
-                    
-                    const changesList = document.getElementById('keyChanges');
-                    changesList.innerHTML = data.keyChanges.map(change => 
-                        `<li>${change}</li>`
-                    ).join('');
-
-                    document.getElementById('farmerImpact').textContent = 
-                        data.personalImpact.business || data.personalImpact.farmer;
-
-                    const translations = data.translations;
-                    const langMap = { en: 'english', hi: 'hindi', kn: 'kannada', mr: 'marathi', ta: 'tamil' };
-                    document.getElementById('translatedText').textContent = 
-                        translations[langMap[currentLanguage]] || translations.hindi || data.plainLanguageSummary;
-
-                    document.getElementById('demoResults').style.display = 'block';
-                }
-            } catch (error) {
-                alert('Error loading policy: ' + error.message);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
-        }
-
-        function closeDetails() {
-            document.getElementById('detailsCard').style.display = 'none';
-        }
-
-        checkHealth();
         loadPolicies();
-    </script>
-</body>
-</html>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 10px; margin-bottom: 30px; }
-        h1 { font-size: 2.5em; margin-bottom: 10px; }
-        .subtitle { font-size: 1.2em; opacity: 0.9; }
-        .card { background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 5px; font-size: 16px; cursor: pointer; transition: transform 0.2s; }
-        button:hover { transform: translateY(-2px); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
-        .demo-button { font-size: 18px; padding: 15px 40px; margin: 20px 0; }
-        .result { margin-top: 20px; padding: 20px; background: #f8f9ff; border-radius: 8px; border-left: 4px solid #667eea; }
-        .loading { text-align: center; padding: 40px; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .section { margin: 20px 0; }
-        .section h3 { color: #667eea; margin-bottom: 10px; }
-        .changes-list { list-style: none; padding: 0; }
-        .changes-list li { padding: 8px 0; padding-left: 25px; position: relative; }
-        .changes-list li:before { content: "✓"; position: absolute; left: 0; color: #667eea; font-weight: bold; }
-        .impact-box { background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #4caf50; }
-        .translation-box { background: #fff3e0; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ff9800; }
-        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 15px; font-size: 14px; font-weight: 600; }
-        .status-demo { background: #e3f2fd; color: #1976d2; }
-        .status-aws { background: #e8f5e9; color: #388e3c; }
-        .info-box { background: #fff9c4; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #fbc02d; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>🌐 Last-Mile Translator</h1>
-            <p class="subtitle">From policy text → personal understanding</p>
-            <div style="margin-top: 15px;">
-                <span id="statusBadge" class="status-badge">Loading...</span>
-            </div>
-        </header>
-
-        <div class="card">
-            <h2>🎯 Quick Demo</h2>
-            <p style="margin: 15px 0; color: #666;">
-                See how AI translates complex government documents into simple, personalized explanations
-            </p>
-            
-            <div style="margin: 20px 0;">
-                <label style="font-weight: 600; margin-right: 10px;">Select Policy:</label>
-                <select id="policySelect" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-right: 10px;">
-                    <option value="maharashtra">Maharashtra - Agriculture (Farmers)</option>
-                    <option value="karnataka">Karnataka - Business (MSME)</option>
-                </select>
-            </div>
-            
-            <button class="demo-button" onclick="runDemo()" id="demoButton">
-                🚀 Run Demo Analysis
-            </button>
-
-            <div id="loading" class="loading" style="display: none;">
-                <div class="spinner"></div>
-                <p style="font-size: 18px; color: #667eea;">Analyzing government document...</p>
-                <p style="color: #999; margin-top: 10px;">Processing with AI</p>
-            </div>
-
-            <div id="demoResults" style="display: none;">
-                <div class="section">
-                    <h3>📋 Plain Language Summary</h3>
-                    <div class="result">
-                        <p id="plainSummary" style="font-size: 16px; line-height: 1.6;"></p>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h3>🔄 Key Changes</h3>
-                    <ul id="keyChanges" class="changes-list"></ul>
-                </div>
-
-                <div class="section">
-                    <h3>👤 Personal Impact</h3>
-                    <div class="impact-box">
-                        <strong id="impactLabel1">For Farmers:</strong>
-                        <p id="farmerImpact" style="margin-top: 8px;"></p>
-                    </div>
-                    <div class="impact-box" style="background: #e1f5fe; border-left-color: #0288d1;">
-                        <strong id="impactLabel2">For Students:</strong>
-                        <p id="studentImpact" style="margin-top: 8px;"></p>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h3>🌍 Translations</h3>
-                    <div class="translation-box">
-                        <strong>Hindi:</strong>
-                        <p id="hindiTranslation" style="margin-top: 8px;"></p>
-                    </div>
-                    <div class="translation-box">
-                        <strong id="lang2Label">Marathi:</strong>
-                        <p id="marathiTranslation" style="margin-top: 8px;"></p>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h3>📊 Extracted Entities</h3>
-                    <div class="result">
-                        <div style="margin: 10px 0;">
-                            <strong>Dates:</strong> <span id="dates"></span>
-                        </div>
-                        <div style="margin: 10px 0;">
-                            <strong>Organizations:</strong> <span id="organizations"></span>
-                        </div>
-                        <div style="margin: 10px 0;">
-                            <strong>Locations:</strong> <span id="locations"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h3>📱 Notifications Demo</h3>
-                    <div style="margin: 15px 0;">
-                        <input type="tel" id="phoneNumber" placeholder="+91XXXXXXXXXX" style="padding: 10px; width: 200px; margin-right: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                        <button onclick="sendSMSDemo()">📱 Send SMS</button>
-                        <button onclick="sendWhatsAppDemo()">💬 WhatsApp</button>
-                    </div>
-                    <div id="notificationResult" style="display: none; margin-top: 10px;">
-                        <div class="result">
-                            <p id="notificationMessage"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h3>🔊 Voice Note Demo</h3>
-                    <button onclick="generateVoiceDemo()">🎤 Generate Voice Note</button>
-                    <div id="voiceResult" style="display: none; margin-top: 10px;">
-                        <div class="result">
-                            <p><strong>Voice Note Generated (Demo)</strong></p>
-                            <p id="voiceInfo"></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="info-box">
-            <strong>ℹ️ Demo Mode:</strong> This demo uses sample data to show functionality without requiring AWS credentials. 
-            Configure AWS services to process real documents.
-        </div>
-    </div>
-
-    <script>
-        const API_URL = window.location.origin;
-
-        async function checkHealth() {
-            try {
-                const response = await fetch(`${API_URL}/api/health`);
-                const data = await response.json();
-                
-                const badge = document.getElementById('statusBadge');
-                if (data.demoMode) {
-                    badge.textContent = '🎭 Demo Mode';
-                    badge.className = 'status-badge status-demo';
-                } else if (data.awsConfigured) {
-                    badge.textContent = '☁️ AWS Connected';
-                    badge.className = 'status-badge status-aws';
-                } else {
-                    badge.textContent = '⚠️ AWS Not Configured';
-                    badge.className = 'status-badge';
-                }
-            } catch (error) {
-                console.error('Health check failed:', error);
-            }
-        }
-
-        async function runDemo() {
-            const button = document.getElementById('demoButton');
-            const loading = document.getElementById('loading');
-            const results = document.getElementById('demoResults');
-            const policyType = document.getElementById('policySelect').value;
-
-            button.disabled = true;
-            loading.style.display = 'block';
-            results.style.display = 'none';
-
-            try {
-                const response = await fetch(`${API_URL}/api/demo/analyze?policy=${policyType}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    document.getElementById('plainSummary').textContent = data.plainLanguageSummary;
-                    
-                    const changesList = document.getElementById('keyChanges');
-                    changesList.innerHTML = '';
-                    data.keyChanges.forEach(change => {
-                        const li = document.createElement('li');
-                        li.textContent = change;
-                        changesList.appendChild(li);
-                    });
-
-                    if (policyType === 'karnataka') {
-                        document.getElementById('impactLabel1').textContent = 'For Business Owners:';
-                        document.getElementById('impactLabel2').textContent = 'For Farmers:';
-                        document.getElementById('lang2Label').textContent = 'Kannada:';
-                    } else {
-                        document.getElementById('impactLabel1').textContent = 'For Farmers:';
-                        document.getElementById('impactLabel2').textContent = 'For Students:';
-                        document.getElementById('lang2Label').textContent = 'Marathi:';
-                    }
-
-                    document.getElementById('farmerImpact').textContent = 
-                        policyType === 'karnataka' ? data.personalImpact.business : data.personalImpact.farmer;
-                    document.getElementById('studentImpact').textContent = data.personalImpact.farmer;
-
-                    const translations = data.translations;
-                    document.getElementById('hindiTranslation').textContent = translations.hindi || '';
-                    document.getElementById('marathiTranslation').textContent = 
-                        translations.kannada || translations.marathi || '';
-
-                    if (data.entities) {
-                        document.getElementById('dates').textContent = 
-                            data.entities.dates?.map(d => d.text).join(', ') || 'N/A';
-                        document.getElementById('organizations').textContent = 
-                            data.entities.organizations?.map(o => o.text).join(', ') || 'N/A';
-                        document.getElementById('locations').textContent = 
-                            data.entities.locations?.map(l => l.text).join(', ') || 'N/A';
-                    }
-
-                    results.style.display = 'block';
-                } else {
-                    alert('Demo failed: ' + data.error);
-                }
-            } catch (error) {
-                alert('Error running demo: ' + error.message);
-            } finally {
-                loading.style.display = 'none';
-                button.disabled = false;
-            }
-        }
-
-        async function sendSMSDemo() {
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            if (!phoneNumber) {
-                alert('Please enter a phone number');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/api/notifications/sms`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phoneNumber,
-                        message: 'New government policy alert: Subsidy scheme updated. Check details at app.'
-                    })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById('notificationMessage').innerHTML = 
-                        `✅ SMS sent successfully!<br>Message ID: ${data.messageId}<br>${data.note || ''}`;
-                    document.getElementById('notificationResult').style.display = 'block';
-                }
-            } catch (error) {
-                alert('SMS error: ' + error.message);
-            }
-        }
-
-        async function sendWhatsAppDemo() {
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            if (!phoneNumber) {
-                alert('Please enter a phone number');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/api/notifications/whatsapp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phoneNumber,
-                        message: 'New government policy alert: Subsidy scheme updated. Check details at app.'
-                    })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById('notificationMessage').innerHTML = 
-                        `✅ WhatsApp message sent!<br>Message ID: ${data.messageId}<br>${data.note || ''}`;
-                    document.getElementById('notificationResult').style.display = 'block';
-                }
-            } catch (error) {
-                alert('WhatsApp error: ' + error.message);
-            }
-        }
-
-        async function generateVoiceDemo() {
-            try {
-                const response = await fetch(`${API_URL}/api/documents/demo-123/voice`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text: 'New subsidy scheme for small farmers in Maharashtra increases income limit to Rs. 2 lakhs.',
-                        language: 'en'
-                    })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById('voiceInfo').innerHTML = 
-                        `Duration: ${data.voiceNote.duration} seconds<br>${data.voiceNote.text || ''}`;
-                    document.getElementById('voiceResult').style.display = 'block';
-                }
-            } catch (error) {
-                alert('Voice generation error: ' + error.message);
-            }
-        }
-
-        checkHealth();
     </script>
 </body>
 </html>

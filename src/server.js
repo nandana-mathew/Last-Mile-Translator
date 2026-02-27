@@ -39,6 +39,27 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.post('/api/translate', async (req, res) => {
+  try {
+    const { text, language } = req.body;
+    
+    if (!text || !language) {
+      return res.status(400).json({ error: 'text and language required' });
+    }
+
+    if (isDemoMode) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return res.json({ success: true, translation: text });
+    }
+
+    const result = await translateDocument('demo', language, 'brief');
+    res.json({ success: true, translation: result.translation });
+  } catch (error) {
+    console.error('Translation error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/api/policies/recent', async (req, res) => {
   try {
     const policies = isDemoMode 
