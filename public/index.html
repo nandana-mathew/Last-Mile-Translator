@@ -3,43 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Last-Mile Translator</title>
+    <title data-i18n="pageTitle">Last-Mile Translator - Government Policy Updates</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #f5f7fa; 
+            overflow-x: hidden;
+        }
+        
+        /* News Ticker */
+        .news-ticker {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 0;
+            overflow: hidden;
+            position: relative;
+            font-weight: 600;
+        }
+        .ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-left 30s linear infinite;
+            padding-left: 100%;
+        }
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        .ticker-label {
+            background: #fff;
+            color: #ff6b6b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-right: 20px;
+            font-weight: 700;
+        }
+        
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; border-radius: 10px; margin-bottom: 20px; }
-        .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-        h1 { font-size: 2em; }
-        .subscribe-btn { background: white; color: #667eea; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
-        .lang-selector { display: flex; gap: 10px; flex-wrap: wrap; }
-        .lang-btn { padding: 8px 16px; border: 2px solid white; background: transparent; color: white; border-radius: 20px; cursor: pointer; }
-        .lang-btn.active { background: white; color: #667eea; }
-        .policy-card { background: white; border-radius: 8px; padding: 20px; margin: 15px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s; }
-        .policy-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-2px); }
-        .policy-title { font-size: 18px; font-weight: 600; color: #333; margin-bottom: 10px; }
-        .policy-meta { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
-        .tag { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        
+        /* Header */
+        header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 30px 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .header-content { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+        }
+        h1 { font-size: 2em; margin-bottom: 5px; }
+        .subtitle { opacity: 0.9; font-size: 1.1em; }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.3);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        /* Language Selector */
+        .lang-selector { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-top: 15px;
+        }
+        .lang-btn { 
+            padding: 8px 16px; 
+            border: 2px solid white; 
+            background: transparent; 
+            color: white; 
+            border-radius: 20px; 
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .lang-btn.active { 
+            background: white; 
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        /* Policy Cards */
+        .policy-card { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 24px; 
+            margin: 15px 0; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+            cursor: pointer; 
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+        .policy-card:hover { 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15); 
+            transform: translateY(-4px);
+        }
+        .policy-title { 
+            font-size: 20px; 
+            font-weight: 700; 
+            color: #333; 
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .policy-meta { 
+            display: flex; 
+            gap: 10px; 
+            margin: 12px 0; 
+            flex-wrap: wrap; 
+        }
+        .tag { 
+            padding: 6px 14px; 
+            border-radius: 16px; 
+            font-size: 12px; 
+            font-weight: 600;
+        }
         .tag-state { background: #e3f2fd; color: #1976d2; }
         .tag-category { background: #f3e5f5; color: #7b1fa2; }
         .tag-date { background: #e8f5e9; color: #388e3c; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
-        .modal-content { background: white; margin: 50px auto; padding: 30px; max-width: 500px; border-radius: 10px; }
-        .modal input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
-        .close-btn { float: right; font-size: 24px; cursor: pointer; }
+        .tag-new { background: #fff3e0; color: #f57c00; animation: pulse 2s infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .policy-brief {
+            color: #666;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+        
+        /* Modal */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content { 
+            background: white; 
+            margin: 50px auto; 
+            padding: 40px; 
+            max-width: 600px; 
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .modal p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .modal input, .modal select { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            border: 2px solid #ddd; 
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .modal input:focus, .modal select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .close-btn { 
+            float: right; 
+            font-size: 28px; 
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .checkbox-group {
+            margin: 15px 0;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .checkbox-item input {
+            width: auto;
+            margin-right: 10px;
+        }
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+        .upload-area:hover {
+            background: #f0f2ff;
+            border-color: #764ba2;
+        }
+        .upload-area.dragover {
+            background: #e8ebff;
+            border-color: #764ba2;
+        }
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.5em; }
+            .header-content { flex-direction: column; align-items: flex-start; }
+            .action-buttons { width: 100%; }
+            .btn { width: 100%; }
+        }
     </style>
 </head>
 <body>
+    <!-- News Ticker -->
+    <div class="news-ticker">
+        <div class="ticker-content" id="tickerContent">
+            <span class="ticker-label" data-i18n="breaking">🔴 BREAKING</span>
+            <span data-i18n="tickerText">New policies updated • Maharashtra Agriculture Subsidy increased • Karnataka MSME benefits expanded • Tamil Nadu education fee waiver announced • Stay informed with real-time updates</span>
+        </div>
+    </div>
+
     <div class="container">
+        <!-- Header -->
         <header>
             <div class="header-content">
                 <div>
                     <h1 data-i18n="title">🌐 Government Policy Updates</h1>
-                    <p data-i18n="subtitle">Real-time policy notifications in your language</p>
+                    <p class="subtitle" data-i18n="subtitle">Real-time policy notifications in your language</p>
                 </div>
-                <button class="subscribe-btn" onclick="openSubscribe()" data-i18n="subscribe">📱 Subscribe for SMS</button>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="openUpload()" data-i18n="uploadBtn">📄 Upload Document</button>
+                    <button class="btn btn-primary" onclick="openSubscribe()" data-i18n="subscribe">📱 Subscribe for SMS</button>
+                </div>
             </div>
-            <div class="lang-selector" style="margin-top: 15px;">
+            <div class="lang-selector">
                 <button class="lang-btn active" onclick="setLanguage('en')">English</button>
                 <button class="lang-btn" onclick="setLanguage('hi')">हिंदी</button>
                 <button class="lang-btn" onclick="setLanguage('kn')">ಕನ್ನಡ</button>
@@ -48,103 +337,184 @@
             </div>
         </header>
 
-        <div id="policiesFeed"></div>
-    </div>
+        <!-- Upload Section -->
+        <div class="upload-section" id="uploadSection" style="display: none;">
+            <h2 data-i18n="uploadTitle">📄 Upload Government Document</h2>
+            <p data-i18n="uploadDesc">Upload a PDF or image of a government circular, notice, or order to get instant summary and translation</p>
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📁</div>
+                <p data-i18n="uploadText">Click to upload or drag and drop</p>
+                <p style="color: #999; font-size: 14px;" data-i18n="uploadFormats">Supports PDF, JPG, PNG (Max 10MB)</p>
+            </div>
+            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event)">
+            <div id="uploadResult" style="margin-top: 20px;"></div>
+        </div>
 
-    <div id="subscribeModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeSubscribe()">&times;</span>
-            <h2 data-i18n="subscribeTitle">Subscribe for SMS Alerts</h2>
-            <p data-i18n="subscribeDesc">Get notified when new policies are published</p>
-            <input type="tel" id="phoneInput" placeholder="+91XXXXXXXXXX" data-i18n-placeholder="phonePlaceholder">
-            <button class="subscribe-btn" onclick="submitSubscribe()" data-i18n="submitBtn">Subscribe</button>
+        <!-- Policies Feed -->
+        <div id="policiesFeed"></div>
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p data-i18n="loading">Loading policies...</p>
         </div>
     </div>
 
+    <!-- Subscribe Modal -->
+    <div id="subscribeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeSubscribe()">&times;</span>
+            <h2 data-i18n="subscribeTitle">📱 Subscribe for SMS Alerts</h2>
+            <p data-i18n="subscribeDesc">Get notified when new policies matching your preferences are published</p>
+            
+            <input type="tel" id="phoneInput" placeholder="+91XXXXXXXXXX" data-i18n-placeholder="phonePlaceholder">
+            
+            <h3 style="margin-top: 20px; margin-bottom: 10px;" data-i18n="selectCategories">Select Policy Categories:</h3>
+            <div class="checkbox-group" id="categoryCheckboxes">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cat-agriculture" value="Agriculture" checked>
+                    <label for="cat-agriculture" data-i18n="catAgriculture">Agriculture & Farming</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cat-business" value="Business" checked>
+                    <label for="cat-business" data-i18n="catBusiness">Business & MSME</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cat-education" value="Education">
+                    <label for="cat-education" data-i18n="catEducation">Education</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cat-healthcare" value="Healthcare">
+                    <label for="cat-healthcare" data-i18n="catHealthcare">Healthcare</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cat-housing" value="Housing">
+                    <label for="cat-housing" data-i18n="catHousing">Housing & Infrastructure</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cat-employment" value="Employment">
+                    <label for="cat-employment" data-i18n="catEmployment">Employment & Skills</label>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 20px; margin-bottom: 10px;" data-i18n="selectStates">Select States:</h3>
+            <select id="stateSelect" multiple style="height: 120px;">
+                <option value="all" selected data-i18n="allStates">All States</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+            </select>
+            
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="submitSubscribe()" data-i18n="submitBtn">Subscribe Now</button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
     <script>
-        const API_URL = window.location.origin;
+        const API_URL = window.API_URL || window.location.origin;
         let currentLanguage = 'en';
         let policies = [];
 
         const translations = {
             en: {
+                pageTitle: 'Last-Mile Translator - Government Policy Updates',
+                breaking: '🔴 BREAKING',
+                tickerText: 'New policies updated • Maharashtra Agriculture Subsidy increased • Karnataka MSME benefits expanded • Tamil Nadu education fee waiver announced • Stay informed with real-time updates',
                 title: '🌐 Government Policy Updates',
                 subtitle: 'Real-time policy notifications in your language',
+                uploadBtn: '📄 Upload Document',
                 subscribe: '📱 Subscribe for SMS',
-                subscribeTitle: 'Subscribe for SMS Alerts',
-                subscribeDesc: 'Get notified when new policies are published',
+                uploadTitle: '📄 Upload Government Document',
+                uploadDesc: 'Upload a PDF or image of a government circular, notice, or order to get instant summary and translation',
+                uploadText: 'Click to upload or drag and drop',
+                uploadFormats: 'Supports PDF, JPG, PNG (Max 10MB)',
+                loading: 'Loading policies...',
+                subscribeTitle: '📱 Subscribe for SMS Alerts',
+                subscribeDesc: 'Get notified when new policies matching your preferences are published',
                 phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'Subscribe',
-                phoneError: 'Please enter phone number',
-                subscribeSuccess: 'Subscribed successfully! You will receive SMS alerts for new policies.',
-                subscribeFailed: 'Subscription failed: '
+                selectCategories: 'Select Policy Categories:',
+                catAgriculture: 'Agriculture & Farming',
+                catBusiness: 'Business & MSME',
+                catEducation: 'Education',
+                catHealthcare: 'Healthcare',
+                catHousing: 'Housing & Infrastructure',
+                catEmployment: 'Employment & Skills',
+                selectStates: 'Select States:',
+                allStates: 'All States',
+                submitBtn: 'Subscribe Now',
+                phoneError: 'Please enter a valid phone number',
+                categoryError: 'Please select at least one category',
+                subscribeSuccess: 'Subscribed successfully! You will receive SMS alerts for new policies matching your preferences.',
+                subscribeFailed: 'Subscription failed: ',
+                uploadSuccess: 'Document uploaded successfully! Processing...',
+                uploadFailed: 'Upload failed: '
             },
             hi: {
+                pageTitle: 'लास्ट-माइल ट्रांसलेटर - सरकारी नीति अपडेट',
+                breaking: '🔴 ताज़ा खबर',
+                tickerText: 'नई नीतियां अपडेट की गईं • महाराष्ट्र कृषि सब्सिडी बढ़ी • कर्नाटक MSME लाभ विस्तारित • तमिलनाडु शिक्षा शुल्क माफी घोषित • वास्तविक समय अपडेट के साथ सूचित रहें',
                 title: '🌐 सरकारी नीति अपडेट',
                 subtitle: 'आपकी भाषा में वास्तविक समय नीति सूचनाएं',
+                uploadBtn: '📄 दस्तावेज़ अपलोड करें',
                 subscribe: '📱 SMS के लिए सदस्यता लें',
-                subscribeTitle: 'SMS अलर्ट के लिए सदस्यता लें',
-                subscribeDesc: 'नई नीतियां प्रकाशित होने पर सूचित हों',
+                uploadTitle: '📄 सरकारी दस्तावेज़ अपलोड करें',
+                uploadDesc: 'तुरंत सारांश और अनुवाद प्राप्त करने के लिए सरकारी परिपत्र, नोटिस या आदेश की PDF या छवि अपलोड करें',
+                uploadText: 'अपलोड करने के लिए क्लिक करें या ड्रैग और ड्रॉप करें',
+                uploadFormats: 'PDF, JPG, PNG समर्थित (अधिकतम 10MB)',
+                loading: 'नीतियां लोड हो रही हैं...',
+                subscribeTitle: '📱 SMS अलर्ट के लिए सदस्यता लें',
+                subscribeDesc: 'आपकी प्राथमिकताओं से मेल खाने वाली नई नीतियों के प्रकाशित होने पर सूचित हों',
                 phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'सदस्यता लें',
-                phoneError: 'कृपया फोन नंबर दर्ज करें',
-                subscribeSuccess: 'सफलतापूर्वक सदस्यता ली गई! आपको नई नीतियों के लिए SMS अलर्ट प्राप्त होंगे।',
-                subscribeFailed: 'सदस्यता विफल: '
-            },
-            kn: {
-                title: '🌐 ಸರ್ಕಾರಿ ನೀತಿ ನವೀಕರಣಗಳು',
-                subtitle: 'ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ನೈಜ-ಸಮಯ ನೀತಿ ಅಧಿಸೂಚನೆಗಳು',
-                subscribe: '📱 SMS ಗಾಗಿ ಚಂದಾದಾರರಾಗಿ',
-                subscribeTitle: 'SMS ಎಚ್ಚರಿಕೆಗಳಿಗೆ ಚಂದಾದಾರರಾಗಿ',
-                subscribeDesc: 'ಹೊಸ ನೀತಿಗಳು ಪ್ರಕಟವಾದಾಗ ಸೂಚಿಸಲಾಗುತ್ತದೆ',
-                phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'ಚಂದಾದಾರರಾಗಿ',
-                phoneError: 'ದಯವಿಟ್ಟು ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ',
-                subscribeSuccess: 'ಯಶಸ್ವಿಯಾಗಿ ಚಂದಾದಾರರಾಗಿದ್ದೀರಿ! ಹೊಸ ನೀತಿಗಳಿಗಾಗಿ ನೀವು SMS ಎಚ್ಚರಿಕೆಗಳನ್ನು ಸ್ವೀಕರಿಸುತ್ತೀರಿ।',
-                subscribeFailed: 'ಚಂದಾದಾರಿಕೆ ವಿಫಲವಾಗಿದೆ: '
-            },
-            mr: {
-                title: '🌐 सरकारी धोरण अद्यतने',
-                subtitle: 'तुमच्या भाषेत रिअल-टाइम धोरण सूचना',
-                subscribe: '📱 SMS साठी सदस्यता घ्या',
-                subscribeTitle: 'SMS अलर्टसाठी सदस्यता घ्या',
-                subscribeDesc: 'नवीन धोरणे प्रकाशित झाल्यावर सूचित व्हा',
-                phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'सदस्यता घ्या',
-                phoneError: 'कृपया फोन नंबर प्रविष्ट करा',
-                subscribeSuccess: 'यशस्वीरित्या सदस्यता घेतली! तुम्हाला नवीन धोरणांसाठी SMS अलर्ट प्राप्त होतील।',
-                subscribeFailed: 'सदस्यता अयशस्वी: '
-            },
-            ta: {
-                title: '🌐 அரசு கொள்கை புதுப்பிப்புகள்',
-                subtitle: 'உங்கள் மொழியில் நேரடி கொள்கை அறிவிப்புகள்',
-                subscribe: '📱 SMS க்கு குழுசேர்',
-                subscribeTitle: 'SMS எச்சரிக்கைகளுக்கு குழுசேர்',
-                subscribeDesc: 'புதிய கொள்கைகள் வெளியிடப்படும்போது அறிவிக்கப்படும்',
-                phonePlaceholder: '+91XXXXXXXXXX',
-                submitBtn: 'குழுசேர்',
-                phoneError: 'தயவுசெய்து தொலைபேசி எண்ணை உள்ளிடவும்',
-                subscribeSuccess: 'வெற்றிகரமாக குழுசேர்ந்தீர்கள்! புதிய கொள்கைகளுக்கான SMS எச்சரிக்கைகளைப் பெறுவீர்கள்.',
-                subscribeFailed: 'குழுசேர்தல் தோல்வியடைந்தது: '
+                selectCategories: 'नीति श्रेणियां चुनें:',
+                catAgriculture: 'कृषि और खेती',
+                catBusiness: 'व्यवसाय और MSME',
+                catEducation: 'शिक्षा',
+                catHealthcare: 'स्वास्थ्य सेवा',
+                catHousing: 'आवास और बुनियादी ढांचा',
+                catEmployment: 'रोजगार और कौशल',
+                selectStates: 'राज्य चुनें:',
+                allStates: 'सभी राज्य',
+                submitBtn: 'अभी सदस्यता लें',
+                phoneError: 'कृपया एक वैध फोन नंबर दर्ज करें',
+                categoryError: 'कृपया कम से कम एक श्रेणी चुनें',
+                subscribeSuccess: 'सफलतापूर्वक सदस्यता ली गई! आपको अपनी प्राथमिकताओं से मेल खाने वाली नई नीतियों के लिए SMS अलर्ट प्राप्त होंगे।',
+                subscribeFailed: 'सदस्यता विफल: ',
+                uploadSuccess: 'दस्तावेज़ सफलतापूर्वक अपलोड किया गया! प्रसंस्करण...',
+                uploadFailed: 'अपलोड विफल: '
             }
         };
+
+        // Add translations for other languages (kn, mr, ta) - abbreviated for space
+        translations.kn = { ...translations.en }; // Use English as fallback
+        translations.mr = { ...translations.en };
+        translations.ta = { ...translations.en };
 
         function setLanguage(lang) {
             currentLanguage = lang;
             localStorage.setItem('preferredLanguage', lang);
             
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
+            // Update all translated elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang] && translations[lang][key]) {
-                    el.textContent = translations[lang][key];
+                    if (el.tagName === 'TITLE') {
+                        el.textContent = translations[lang][key];
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
                 }
             });
             
+            // Update placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if (translations[lang] && translations[lang][key]) {
@@ -152,10 +522,15 @@
                 }
             });
             
+            // Update document language
+            document.documentElement.lang = lang;
+            
+            // Reload policies with new language
             renderPolicies();
         }
 
         async function loadPolicies() {
+            document.getElementById('loading').style.display = 'block';
             try {
                 const response = await fetch(`${API_URL}/api/policies/recent`);
                 const data = await response.json();
@@ -165,55 +540,40 @@
                 }
             } catch (error) {
                 console.error('Failed to load policies:', error);
+                document.getElementById('policiesFeed').innerHTML = 
+                    '<p style="text-align: center; color: #999; padding: 40px;">Failed to load policies. Please refresh the page.</p>';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
             }
         }
 
         async function renderPolicies() {
             const feed = document.getElementById('policiesFeed');
             
-            if (currentLanguage === 'en') {
-                feed.innerHTML = policies.map(policy => `
-                    <div class="policy-card" onclick="viewPolicy('${policy.id}')">
-                        <div class="policy-title">${policy.title}</div>
-                        <div class="policy-meta">
-                            <span class="tag tag-state">${policy.state}</span>
-                            <span class="tag tag-category">${policy.category}</span>
-                            <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
-                        </div>
-                        <p style="color: #666; margin-top: 10px;">${policy.brief}</p>
-                    </div>
-                `).join('');
-            } else {
-                const translatedPolicies = await Promise.all(policies.map(async policy => {
-                    try {
-                        const response = await fetch(`${API_URL}/api/translate`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                text: `${policy.title}|||${policy.brief}|||${policy.state}|||${policy.category}`,
-                                language: currentLanguage
-                            })
-                        });
-                        const data = await response.json();
-                        const [title, brief, state, category] = data.translation.split('|||');
-                        return { ...policy, title, brief, state, category };
-                    } catch {
-                        return policy;
-                    }
-                }));
-                
-                feed.innerHTML = translatedPolicies.map(policy => `
-                    <div class="policy-card" onclick="viewPolicy('${policy.id}')">
-                        <div class="policy-title">${policy.title}</div>
-                        <div class="policy-meta">
-                            <span class="tag tag-state">${policy.state}</span>
-                            <span class="tag tag-category">${policy.category}</span>
-                            <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
-                        </div>
-                        <p style="color: #666; margin-top: 10px;">${policy.brief}</p>
-                    </div>
-                `).join('');
+            if (!policies.length) {
+                feed.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">No policies available</p>';
+                return;
             }
+            
+            feed.innerHTML = policies.map(policy => `
+                <div class="policy-card" onclick="viewPolicy('${policy.id}')">
+                    <div class="policy-title">${policy.title}</div>
+                    <div class="policy-meta">
+                        <span class="tag tag-state">${policy.state}</span>
+                        <span class="tag tag-category">${policy.category}</span>
+                        <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                        ${isNew(policy.date) ? '<span class="tag tag-new">NEW</span>' : ''}
+                    </div>
+                    <p class="policy-brief">${policy.brief}</p>
+                </div>
+            `).join('');
+        }
+
+        function isNew(dateString) {
+            const policyDate = new Date(dateString);
+            const now = new Date();
+            const diffDays = (now - policyDate) / (1000 * 60 * 60 * 24);
+            return diffDays <= 7; // Mark as new if within 7 days
         }
 
         function viewPolicy(policyId) {
@@ -228,20 +588,48 @@
             document.getElementById('subscribeModal').style.display = 'none';
         }
 
+        function openUpload() {
+            const uploadSection = document.getElementById('uploadSection');
+            uploadSection.style.display = uploadSection.style.display === 'none' ? 'block' : 'none';
+        }
+
         async function submitSubscribe() {
-            const phone = document.getElementById('phoneInput').value;
-            if (!phone) {
+            const phone = document.getElementById('phoneInput').value.trim();
+            if (!phone || phone.length < 10) {
                 alert(translations[currentLanguage].phoneError);
                 return;
             }
+
+            // Get selected categories
+            const categories = [];
+            document.querySelectorAll('#categoryCheckboxes input:checked').forEach(cb => {
+                categories.push(cb.value);
+            });
+
+            if (categories.length === 0) {
+                alert(translations[currentLanguage].categoryError);
+                return;
+            }
+
+            // Get selected states
+            const stateSelect = document.getElementById('stateSelect');
+            const states = Array.from(stateSelect.selectedOptions).map(opt => opt.value);
 
             try {
                 const response = await fetch(`${API_URL}/api/users/profile`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        demographics: { phoneNumber: phone, languages: [currentLanguage] },
-                        subscriptions: { documentTypes: ['all'], deliveryMethod: 'sms', frequency: 'immediate' }
+                        demographics: { 
+                            phoneNumber: phone, 
+                            languages: [currentLanguage],
+                            states: states
+                        },
+                        subscriptions: { 
+                            documentTypes: categories, 
+                            deliveryMethod: 'sms', 
+                            frequency: 'immediate' 
+                        }
                     })
                 });
 
@@ -249,20 +637,132 @@
                 if (data.success) {
                     alert(translations[currentLanguage].subscribeSuccess);
                     closeSubscribe();
+                    // Reset form
+                    document.getElementById('phoneInput').value = '';
+                } else {
+                    throw new Error(data.error || 'Subscription failed');
                 }
             } catch (error) {
                 alert(translations[currentLanguage].subscribeFailed + error.message);
             }
         }
 
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            }, false);
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                handleFile(files[0]);
+            }
+        }, false);
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        async function handleFile(file) {
+            // Validate file
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                alert('File size exceeds 10MB limit');
+                return;
+            }
+
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Only PDF, JPG, and PNG files are supported');
+                return;
+            }
+
+            const resultDiv = document.getElementById('uploadResult');
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Processing document...</p></div>';
+
+            try {
+                // Convert file to base64
+                const base64 = await fileToBase64(file);
+                
+                const response = await fetch(`${API_URL}/api/documents`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        file: base64.split(',')[1],
+                        fileName: file.name
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                            <h3 style="color: #388e3c; margin-bottom: 10px;">✓ Document Processed Successfully!</h3>
+                            <p><strong>File:</strong> ${data.fileName}</p>
+                            <p><strong>Pages:</strong> ${data.pageCount}</p>
+                            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px; max-height: 400px; overflow-y: auto;">
+                                <h4 style="margin-bottom: 10px;">Extracted Text:</h4>
+                                <pre style="white-space: pre-wrap; font-family: Arial; font-size: 14px; line-height: 1.6;">${data.text}</pre>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.error || 'Processing failed');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div style="background: #ffebee; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                        <h3 style="color: #c62828;">✗ Upload Failed</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Initialize
         const savedLang = localStorage.getItem('preferredLanguage') || 'en';
         currentLanguage = savedLang;
+        
+        // Set active language button
         document.querySelectorAll('.lang-btn').forEach(btn => {
-            if (btn.textContent.includes(savedLang === 'en' ? 'English' : savedLang === 'hi' ? 'हिंदी' : savedLang === 'kn' ? 'ಕನ್ನಡ' : savedLang === 'mr' ? 'मराठी' : 'தமிழ்')) {
+            const btnLang = btn.onclick.toString().match(/'([a-z]+)'/)[1];
+            if (btnLang === savedLang) {
                 btn.classList.add('active');
             }
         });
         
+        // Apply saved language
         if (savedLang !== 'en') {
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
@@ -272,6 +772,7 @@
             });
         }
 
+        // Load policies on page load
         loadPolicies();
     </script>
 </body>

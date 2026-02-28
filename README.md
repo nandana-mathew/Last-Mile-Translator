@@ -1,138 +1,69 @@
-"# Last-Mile Translator for Government Decisions
-*From policy text → personal understanding*
+# Last-Mile Translator
 
-## 🎯 Quick Start (Demo Mode - No AWS Required)
+Government document translation and summarization system using AWS services.
 
+## Features
+
+- 📄 PDF document upload and text extraction (Textract)
+- 🌍 Multi-language translation (Amazon Translate)
+- 🔊 Text-to-speech conversion (Amazon Polly)
+- 📱 SMS notifications for policy updates (SNS)
+- 🎯 Category-based subscription system
+- 📰 Live scrolling news ticker
+- 🎨 Modern, responsive UI
+
+## Quick Start
+
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
+
+### Windows
+```cmd
+deploy-complete-system.bat
+```
+
+### Mac / Linux / WSL
 ```bash
-npm install
-cp .env.example .env
-npm start
+chmod +x deploy-complete-system.sh
+./deploy-complete-system.sh
 ```
 
-Open http://localhost:3000 and click **"🚀 Run Demo Analysis"**
+## Architecture
 
-That's it! The demo works without any AWS credentials.
+- **Frontend**: Static HTML/CSS/JS hosted on S3
+- **Backend**: AWS Lambda + API Gateway
+- **Storage**: S3 (documents) + DynamoDB (metadata)
+- **AI Services**: Textract (OCR), Translate, Polly
 
----
-
-## 🎯 The Problem We Solve
-
-Government decisions exist everywhere - circulars, notices, orders - but they're:
-- **Dense, legal, English-heavy** - Written for bureaucrats, not citizens
-- **Opaque on changes** - People don't know what actually changed
-- **Widely misinterpreted** - Even officials often get them wrong
-
-**The real gap isn't access to information → it's interpretation & personalization.**
-
-## 💡 What This System Does
-
-When a new government order is released, our AI system:
-
-1. **Ingests** the document (PDF/scan/web notice)
-2. **Extracts and understands**:
-   - Who it applies to
-   - What changed vs previous rules
-   - Deadlines, actions, exclusions
-3. **Converts it into**:
-   - Plain-language summaries
-   - "What this means for you" explanations
-   - Voice notes in local languages
-
-### Example Output
-> **Original**: "Circular No. 4.2.1/2024 supersedes clause 4.2 of notification dated 15.03.2023 regarding subsidy eligibility criteria for marginal farmers..."
-> 
-> **Our Translation**: "If you are a small farmer owning less than 2 hectares, this order means you must apply before March 15 to continue receiving subsidy X."
-
-## 🤖 Why AI Is Essential
-
-This cannot be done with simple rules because:
-- Orders vary wildly in structure and format
-- Changes are often implicit ("supersedes clause 4.2 of...")
-- Applicability depends on complex context (income, category, geography)
-
-**AI is used for**:
-- Document understanding and parsing
-- Semantic comparison (detecting what actually changed)
-- Natural language explanation generation
-- Language simplification and localization
-
-## 🏗️ AWS-Native Technical Architecture
-
-### Core Services Pipeline
+## Project Structure
 
 ```
-📄 Document Input → 🔍 AI Processing → 🌐 Translation → 👤 Personalization → 📱 Delivery
+├── public/              # Frontend files
+├── src/
+│   ├── handlers/       # Business logic
+│   ├── lambda/         # Lambda handlers
+│   └── services/       # AWS integrations
+├── serverless.yml      # Infrastructure config
+└── .env               # Environment variables
 ```
 
-#### 1. Ingestion & Understanding
-- **Amazon Textract** → Extract text from PDFs/scanned orders
-- **Amazon Comprehend** → Detect key entities (beneficiary groups, dates, conditions)
-- **Amazon Bedrock (LLM)** → 
-  - Summarize the order
-  - Detect changes vs previous versions
-  - Generate plain-language explanations
+## Requirements
 
-#### 2. Personalization Layer
-- **AWS Lambda** → Apply user context (farmer, senior citizen, student, etc.)
-- **DynamoDB** → Store user profiles (minimal, consent-based)
+- AWS Account with credentials configured
+- Node.js 18+
+- AWS CLI
+- Serverless Framework
 
-#### 3. Language & Access
-- **Amazon Translate** → Local languages
-- **Amazon Polly** → Voice notes
-- **Amazon SNS** → SMS/WhatsApp delivery
+## Documentation
 
-#### 4. Workflow Orchestration
-- **AWS Step Functions** → Ingest → understand → simplify → personalize → distribute
+- [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) - Complete deployment instructions
+- [requirements.md](requirements.md) - Project requirements
+- [design.md](design.md) - System design
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical architecture
 
-*This is a textbook example of event-driven, AI-first AWS architecture.*
+## Cost Estimate
 
-## 🚀 Hackathon Feasibility
+With AWS Free Tier: ~$5-20/month depending on usage.
 
-**Very feasible because**:
-- You only need 5-10 sample government orders for demo
-- Personalization can be rule-light ("if user category == X")
-- Demo can show compelling before/after comparison
+## License
 
-### Demo That Judges Love
-**Show**: Original 10-page circular → 30-second voice explanation in local language
-
-## ⚠️ Risks & Mitigation
-
-| Risk | Mitigation |
-|------|------------|
-| **Misinterpretation** | Add "informational, not legal advice" disclaimer + confidence scores |
-| **AI Hallucination** | Force LLM to quote exact clauses it simplified |
-| **Language Quality** | Human validation for critical translations |
-| **Scale Challenges** | Start with specific domains (agriculture, healthcare) |
-
-## 📊 Success Metrics
-
-- **Comprehension**: 75% of users understand government decisions without external help
-- **Time Savings**: 60% reduction in time to understand government decisions
-- **Adoption**: 10,000+ active users within 6 months
-- **Impact**: 50% reduction in citizen queries to government helplines
-
-## 🛠️ Quick Start
-
-### For Hackathon Demo
-1. **Sample Documents**: Collect 5-10 recent government circulars
-2. **Core Pipeline**: Build basic ingestion → AI processing → output
-3. **Demo Interface**: Simple web app showing before/after
-4. **Voice Demo**: Generate one audio explanation in local language
-
-### For Full Implementation
-See detailed documentation:
-- [Requirements](requirements.md) - Complete user stories and acceptance criteria
-- [Design](design.md) - Technical architecture and implementation details
-
-## 🎯 Target Impact
-
-**Primary Users**: Citizens who need to understand government decisions
-**Secondary Users**: Government officials needing quick interpretation
-**Tertiary Users**: Community leaders and NGOs helping citizens
-
-**Vision**: Every citizen can understand how government decisions affect them, in their language, within minutes of publication.
-
----
-
-*Built for the people, powered by AI, delivered through the cloud.*" 
+MIT

@@ -16,7 +16,9 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.use(cors());
 app.use(express.json());
 
-const region = process.env.AWS_REGION || 'us-east-1';
+// Use config for region (handles Lambda vs local dev)
+import { config } from './config/awsConfig.js';
+const region = config.aws.region;
 const bucketName = process.env.S3_BUCKET_NAME;
 const tableName = process.env.DYNAMODB_TABLE_NAME;
 

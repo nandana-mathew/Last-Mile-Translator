@@ -3,162 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Policy Details</title>
+    <title>Policy Details - Last-Mile Translator</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #f5f7fa; 
+        }
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        .back-btn { background: white; color: #667eea; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 15px; }
-        .card { background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2 { color: #667eea; margin-bottom: 15px; }
-        .section { margin: 25px 0; }
-        .summary-box { background: #f8f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; line-height: 1.6; }
-        .changes-list { list-style: none; padding: 0; }
-        .changes-list li { padding: 10px 0; padding-left: 25px; position: relative; }
-        .changes-list li:before { content: "✓"; position: absolute; left: 0; color: #667eea; font-weight: bold; }
-        .impact-box { background: #e8f5e9; padding: 20px; border-radius: 8px; border-left: 4px solid #4caf50; }
-        .loading { text-align: center; padding: 40px; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .policy-detail {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 { font-size: 2em; margin-bottom: 20px; }
+        h2 { color: #667eea; margin: 20px 0 10px; }
+        .meta { 
+            display: flex; 
+            gap: 10px; 
+            margin: 15px 0; 
+            flex-wrap: wrap; 
+        }
+        .tag { 
+            padding: 6px 14px; 
+            border-radius: 16px; 
+            font-size: 12px; 
+            font-weight: 600;
+        }
+        .tag-state { background: #e3f2fd; color: #1976d2; }
+        .tag-category { background: #f3e5f5; color: #7b1fa2; }
+        .tag-date { background: #e8f5e9; color: #388e3c; }
+        .summary { 
+            background: #f8f9ff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <button class="back-btn" onclick="goBack()" id="backBtn">← Back to Policies</button>
-        
         <header>
-            <h1 id="policyTitle">Loading...</h1>
+            <a href="index.html" class="back-btn">← Back to Home</a>
         </header>
 
-        <div id="loading" class="loading">
-            <div class="spinner"></div>
-            <p style="margin-top: 15px; color: #667eea;" id="loadingText">Analyzing policy...</p>
-        </div>
-
-        <div id="content" style="display: none;">
-            <div class="card">
-                <h2 id="summaryTitle">📋 Summary</h2>
-                <div class="summary-box" id="summary"></div>
-            </div>
-
-            <div class="card">
-                <h2 id="changesTitle">🔄 Key Changes</h2>
-                <ul class="changes-list" id="keyChanges"></ul>
-            </div>
-
-            <div class="card">
-                <h2 id="impactTitle">👤 Personal Impact</h2>
-                <div class="impact-box" id="impact"></div>
-            </div>
+        <div id="policyContent" class="policy-detail">
+            <div class="loading">Loading policy details...</div>
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script>
-        const API_URL = window.location.origin;
-        const params = new URLSearchParams(window.location.search);
-        const policyId = params.get('id');
-        const language = params.get('lang') || localStorage.getItem('preferredLanguage') || 'en';
-
-        const translations = {
-            en: { 
-                summaryTitle: '📋 Summary', 
-                changesTitle: '🔄 Key Changes', 
-                impactTitle: '👤 Personal Impact',
-                backBtn: '← Back to Policies',
-                loading: 'Analyzing policy...',
-                errorMsg: 'Error loading policy: '
-            },
-            hi: { 
-                summaryTitle: '📋 सारांश', 
-                changesTitle: '🔄 मुख्य परिवर्तन', 
-                impactTitle: '👤 व्यक्तिगत प्रभाव',
-                backBtn: '← नीतियों पर वापस जाएं',
-                loading: 'नीति का विश्लेषण किया जा रहा है...',
-                errorMsg: 'नीति लोड करने में त्रुटि: '
-            },
-            kn: { 
-                summaryTitle: '📋 ಸಾರಾಂಶ', 
-                changesTitle: '🔄 ಪ್ರಮುಖ ಬದಲಾವಣೆಗಳು', 
-                impactTitle: '👤 ವೈಯಕ್ತಿಕ ಪ್ರಭಾವ',
-                backBtn: '← ನೀತಿಗಳಿಗೆ ಹಿಂತಿರುಗಿ',
-                loading: 'ನೀತಿಯನ್ನು ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...',
-                errorMsg: 'ನೀತಿಯನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ: '
-            },
-            mr: { 
-                summaryTitle: '📋 सारांश', 
-                changesTitle: '🔄 मुख्य बदल', 
-                impactTitle: '👤 वैयक्तिक प्रभाव',
-                backBtn: '← धोरणांवर परत या',
-                loading: 'धोरणाचे विश्लेषण करत आहे...',
-                errorMsg: 'धोरण लोड करताना त्रुटी: '
-            },
-            ta: { 
-                summaryTitle: '📋 சுருக்கம்', 
-                changesTitle: '🔄 முக்கிய மாற்றங்கள்', 
-                impactTitle: '👤 தனிப்பட்ட தாக்கம்',
-                backBtn: '← கொள்கைகளுக்குத் திரும்பு',
-                loading: 'கொள்கையை பகுப்பாய்வு செய்கிறது...',
-                errorMsg: 'கொள்கையை ஏற்றுவதில் பிழை: '
-            }
-        };
-
-        function goBack() {
-            window.location.href = 'index.html';
-        }
-
-        async function translateText(text, lang) {
-            if (lang === 'en') return text;
-            try {
-                const response = await fetch(`${API_URL}/api/translate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text, language: lang })
-                });
-                const data = await response.json();
-                return data.translation || text;
-            } catch {
-                return text;
-            }
-        }
+        const API_URL = window.API_URL || window.location.origin;
+        const urlParams = new URLSearchParams(window.location.search);
+        const policyId = urlParams.get('id');
+        const lang = urlParams.get('lang') || 'en';
 
         async function loadPolicy() {
+            if (!policyId) {
+                document.getElementById('policyContent').innerHTML = '<p>Policy not found</p>';
+                return;
+            }
+
             try {
-                if (translations[language]) {
-                    document.getElementById('backBtn').textContent = translations[language].backBtn;
-                    document.getElementById('loadingText').textContent = translations[language].loading;
-                    document.getElementById('summaryTitle').textContent = translations[language].summaryTitle;
-                    document.getElementById('changesTitle').textContent = translations[language].changesTitle;
-                    document.getElementById('impactTitle').textContent = translations[language].impactTitle;
-                }
-
-                const policyType = policyId.includes('002') ? 'karnataka' : 'maharashtra';
-                const response = await fetch(`${API_URL}/api/demo/analyze?policy=${policyType}`);
+                // For demo, show policy details from demo data
+                const response = await fetch(`${API_URL}/api/policies/recent`);
                 const data = await response.json();
-
+                
                 if (data.success) {
-                    const titleText = policyId.includes('002') ? 
-                        'Karnataka MSME Incentive Scheme 2024' : 
-                        'Maharashtra Agriculture Subsidy Scheme 2024';
-                    
-                    document.getElementById('policyTitle').textContent = await translateText(titleText, language);
-                    document.getElementById('summary').textContent = await translateText(data.plainLanguageSummary, language);
-                    
-                    const translatedChanges = await Promise.all(
-                        data.keyChanges.map(change => translateText(change, language))
-                    );
-                    document.getElementById('keyChanges').innerHTML = 
-                        translatedChanges.map(change => `<li>${change}</li>`).join('');
-
-                    const impactText = data.personalImpact.business || data.personalImpact.farmer;
-                    document.getElementById('impact').textContent = await translateText(impactText, language);
-
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('content').style.display = 'block';
+                    const policy = data.policies.find(p => p.id === policyId);
+                    if (policy) {
+                        displayPolicy(policy);
+                    } else {
+                        document.getElementById('policyContent').innerHTML = '<p>Policy not found</p>';
+                    }
                 }
             } catch (error) {
-                alert((translations[language]?.errorMsg || translations.en.errorMsg) + error.message);
+                console.error('Error loading policy:', error);
+                document.getElementById('policyContent').innerHTML = '<p>Error loading policy details</p>';
             }
+        }
+
+        function displayPolicy(policy) {
+            document.getElementById('policyContent').innerHTML = `
+                <h1>${policy.title}</h1>
+                <div class="meta">
+                    <span class="tag tag-state">${policy.state}</span>
+                    <span class="tag tag-category">${policy.category}</span>
+                    <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                </div>
+                
+                <div class="summary">
+                    <h2>📋 Summary</h2>
+                    <p>${policy.brief}</p>
+                </div>
+
+                <div class="summary">
+                    <h2>🎯 What This Means For You</h2>
+                    <p>This policy affects ${policy.category.toLowerCase()} sector in ${policy.state}. 
+                    If you are involved in ${policy.category.toLowerCase()}, you should review the details and take necessary action.</p>
+                </div>
+
+                <div class="summary">
+                    <h2>📅 Important Information</h2>
+                    <p><strong>Published:</strong> ${new Date(policy.date).toLocaleDateString()}</p>
+                    <p><strong>State:</strong> ${policy.state}</p>
+                    <p><strong>Category:</strong> ${policy.category}</p>
+                    <p><strong>Impact Level:</strong> ${policy.impact || 'Medium'}</p>
+                </div>
+            `;
         }
 
         loadPolicy();

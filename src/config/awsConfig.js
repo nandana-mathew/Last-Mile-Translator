@@ -3,8 +3,18 @@ dotenv.config();
 
 const isDemoMode = process.env.DEMO_MODE === 'true';
 
+// AWS Lambda automatically provides AWS_REGION, but we can't set it as env var
+// Use AWS_DEFAULT_REGION for local dev, or let AWS SDK auto-detect in Lambda
+const getAwsRegion = () => {
+  // In Lambda, AWS SDK automatically detects region
+  if (process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return process.env.AWS_REGION || 'us-east-1';
+  }
+  // For local development, use AWS_DEFAULT_REGION from .env
+  return process.env.AWS_DEFAULT_REGION || 'us-east-1';
+};
+
 const requiredEnvVars = isDemoMode ? [] : [
-  'AWS_REGION',
   'S3_BUCKET_NAME',
   'DYNAMODB_DOCUMENTS_TABLE',
   'DYNAMODB_USERS_TABLE'
@@ -23,7 +33,7 @@ export const config = {
     enabled: isDemoMode
   },
   aws: {
-    region: process.env.AWS_REGION || 'us-east-1',
+    region: getAwsRegion(),
     s3: {
       bucketName: process.env.S3_BUCKET_NAME || 'demo-bucket',
       documentPrefix: 'documents/',
@@ -54,7 +64,6 @@ if (!isDemoMode) {
 
 export const isAwsConfigured = () => {
   return !isDemoMode && 
-         process.env.AWS_REGION && 
          process.env.S3_BUCKET_NAME && 
          process.env.DYNAMODB_DOCUMENTS_TABLE;
 };

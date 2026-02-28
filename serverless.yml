@@ -3,18 +3,16 @@ service: last-mile-translator
 provider:
   name: aws
   runtime: nodejs18.x
-  region: ${env:AWS_REGION, 'us-east-1'}
+  region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
   memorySize: 512
-  timeout: 300
+  timeout: 29
   environment:
-    AWS_REGION: ${env:AWS_REGION}
     S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
     DYNAMODB_DOCUMENTS_TABLE: ${env:DYNAMODB_DOCUMENTS_TABLE}
     DYNAMODB_USERS_TABLE: ${env:DYNAMODB_USERS_TABLE}
-    BEDROCK_MODEL_ID: ${env:BEDROCK_MODEL_ID}
-    BEDROCK_MAX_TOKENS: ${env:BEDROCK_MAX_TOKENS}
-    BEDROCK_TEMPERATURE: ${env:BEDROCK_TEMPERATURE}
+    DEMO_MODE: ${env:DEMO_MODE}
+    NODE_ENV: ${env:NODE_ENV}
   iam:
     role:
       statements:
@@ -40,15 +38,6 @@ provider:
           Resource: '*'
         - Effect: Allow
           Action:
-            - comprehend:DetectEntities
-            - comprehend:DetectKeyPhrases
-          Resource: '*'
-        - Effect: Allow
-          Action:
-            - bedrock:InvokeModel
-          Resource: '*'
-        - Effect: Allow
-          Action:
             - translate:TranslateText
           Resource: '*'
         - Effect: Allow
@@ -65,6 +54,30 @@ provider:
           Resource: '*'
 
 functions:
+  health:
+    handler: src/lambda/handlers.healthHandler
+    events:
+      - http:
+          path: /api/health
+          method: get
+          cors: true
+
+  recentPolicies:
+    handler: src/lambda/handlers.recentPoliciesHandler
+    events:
+      - http:
+          path: /api/policies/recent
+          method: get
+          cors: true
+
+  translateText:
+    handler: src/lambda/handlers.translateTextHandler
+    events:
+      - http:
+          path: /api/translate
+          method: post
+          cors: true
+
   documentUpload:
     handler: src/lambda/handlers.documentUploadHandler
     events:

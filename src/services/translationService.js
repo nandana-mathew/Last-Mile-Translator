@@ -50,10 +50,15 @@ Format your response as JSON:
 
   async invokeBedrock(prompt) {
     const payload = {
-      prompt: `\n\nHuman: ${prompt}\n\nAssistant:`,
-      max_tokens_to_sample: this.maxTokens,
+      anthropic_version: "bedrock-2023-05-31",
+      max_tokens: this.maxTokens,
       temperature: 0.5,
-      top_p: 0.9
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ]
     };
 
     const command = new InvokeModelCommand({
@@ -66,11 +71,11 @@ Format your response as JSON:
     const response = await this.bedrockClient.send(command);
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
     
-    if (!responseBody.completion) {
+    if (!responseBody.content || !responseBody.content[0] || !responseBody.content[0].text) {
       throw new Error('Invalid Bedrock response');
     }
     
-    return responseBody.completion;
+    return responseBody.content[0].text;
   }
 
   extractBrief(summary) {

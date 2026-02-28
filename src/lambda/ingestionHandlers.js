@@ -58,7 +58,8 @@ export const smsNotificationHandler = async (event) => {
     const { phoneNumber, message } = JSON.parse(event.body);
     
     const { NotificationService } = await import('../services/notificationService.js');
-    const notificationService = new NotificationService(process.env.AWS_REGION);
+    const { config } = await import('../config/awsConfig.js');
+    const notificationService = new NotificationService(config.aws.region);
     
     const result = await notificationService.sendSMS(phoneNumber, message);
     
@@ -80,7 +81,8 @@ export const whatsappNotificationHandler = async (event) => {
     const { phoneNumber, message } = JSON.parse(event.body);
     
     const { NotificationService } = await import('../services/notificationService.js');
-    const notificationService = new NotificationService(process.env.AWS_REGION);
+    const { config } = await import('../config/awsConfig.js');
+    const notificationService = new NotificationService(config.aws.region);
     
     const result = await notificationService.sendWhatsApp(phoneNumber, message);
     
