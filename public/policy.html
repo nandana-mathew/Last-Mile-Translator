@@ -83,7 +83,66 @@
         const API_URL = window.API_URL || window.location.origin;
         const urlParams = new URLSearchParams(window.location.search);
         const policyId = urlParams.get('id');
-        const lang = urlParams.get('lang') || 'en';
+        const lang = urlParams.get('lang') || localStorage.getItem('preferredLanguage') || 'en';
+
+        const translations = {
+            en: { 
+                backBtn: '← Back to Home',
+                loading: 'Loading policy details...',
+                summaryTitle: '📋 Summary', 
+                changesTitle: '🔄 Key Changes', 
+                impactTitle: '👤 Personal Impact',
+                errorMsg: 'Error loading policy: '
+            },
+            hi: { 
+                backBtn: '← होम पर वापस जाएं',
+                loading: 'नीति विवरण लोड हो रहा है...',
+                summaryTitle: '📋 सारांश', 
+                changesTitle: '🔄 मुख्य परिवर्तन', 
+                impactTitle: '👤 व्यक्तिगत प्रभाव',
+                errorMsg: 'नीति लोड करने में त्रुटि: '
+            },
+            kn: { 
+                backBtn: '← ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ',
+                loading: 'ನೀತಿ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...',
+                summaryTitle: '📋 ಸಾರಾಂಶ', 
+                changesTitle: '🔄 ಪ್ರಮುಖ ಬದಲಾವಣೆಗಳು', 
+                impactTitle: '👤 ವೈಯಕ್ತಿಕ ಪ್ರಭಾವ',
+                errorMsg: 'ನೀತಿಯನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ: '
+            },
+            mr: { 
+                backBtn: '← मुख्यपृष्ठावर परत या',
+                loading: 'धोरण तपशील लोड होत आहेत...',
+                summaryTitle: '📋 सारांश', 
+                changesTitle: '🔄 मुख्य बदल', 
+                impactTitle: '👤 वैयक्तिक प्रभाव',
+                errorMsg: 'धोरण लोड करताना त्रुटी: '
+            },
+            ta: { 
+                backBtn: '← முகப்புக்குத் திரும்பு',
+                loading: 'கொள்கை விவரங்கள் ஏற்றப்படுகின்றன...',
+                summaryTitle: '📋 சுருக்கம்', 
+                changesTitle: '🔄 முக்கிய மாற்றங்கள்', 
+                impactTitle: '👤 தனிப்பட்ட தாக்கம்',
+                errorMsg: 'கொள்கையை ஏற்றுவதில் பிழை: '
+            }
+        };
+
+        async function translateText(text, targetLang) {
+            if (targetLang === 'en' || !text) return text;
+            try {
+                const response = await fetch(`${API_URL}/api/translate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, language: targetLang })
+                });
+                const data = await response.json();
+                return data.success ? data.translation : text;
+            } catch (err) {
+                console.error('Translation error:', err);
+                return text;
+            }
+        }
 
         async function loadPolicy() {
             if (!policyId) {
@@ -91,53 +150,77 @@
                 return;
             }
 
+            // Update UI text based on language
+            const backBtn = document.querySelector('.back-btn');
+            if (backBtn && translations[lang]) {
+                backBtn.textContent = translations[lang].backBtn;
+            }
+
             try {
-                // For demo, show policy details from demo data
+                // Load policy from API
                 const response = await fetch(`${API_URL}/api/policies/recent`);
                 const data = await response.json();
                 
                 if (data.success) {
                     const policy = data.policies.find(p => p.id === policyId);
                     if (policy) {
-                        displayPolicy(policy);
+                        await displayPolicy(policy);
                     } else {
                         document.getElementById('policyContent').innerHTML = '<p>Policy not found</p>';
                     }
                 }
             } catch (error) {
                 console.error('Error loading policy:', error);
-                document.getElementById('policyContent').innerHTML = '<p>Error loading policy details</p>';
+                const errorMsg = translations[lang]?.errorMsg || translations.en.errorMsg;
+                document.getElementById('policyContent').innerHTML = `<p>${errorMsg}${error.message}</p>`;
             }
         }
 
-        function displayPolicy(policy) {
-            document.getElementById('policyContent').innerHTML = `
-                <h1>${policy.title}</h1>
-                <div class="meta">
-                    <span class="tag tag-state">${policy.state}</span>
-                    <span class="tag tag-category">${policy.category}</span>
-                    <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
-                </div>
+        async function displayPolicy(policy) {
+            const content = document.getElementById('policyContent');
+            content.innerHTML = `<div class="loading">${translations[lang]?.loading || translations.en.loading}</div>`;
+
+            try {
+                // Translate policy content
+                const title = await translateText(policy.title, lang);
+                const brief = await translateText(policy.brief, lang);
+                const state = await translateText(policy.state, lang);
+                const category = await translateText(policy.category, lang);
                 
-                <div class="summary">
-                    <h2>📋 Summary</h2>
-                    <p>${policy.brief}</p>
-                </div>
+                // Generate impact text
+                const impactText = `This policy affects ${category.toLowerCase()} sector in ${state}. If you are involved in ${category.toLowerCase()}, you should review the details and take necessary action.`;
+                const translatedImpact = await translateText(impactText, lang);
 
-                <div class="summary">
-                    <h2>🎯 What This Means For You</h2>
-                    <p>This policy affects ${policy.category.toLowerCase()} sector in ${policy.state}. 
-                    If you are involved in ${policy.category.toLowerCase()}, you should review the details and take necessary action.</p>
-                </div>
+                content.innerHTML = `
+                    <h1>${title}</h1>
+                    <div class="meta">
+                        <span class="tag tag-state">${state}</span>
+                        <span class="tag tag-category">${category}</span>
+                        <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                    </div>
+                    
+                    <div class="summary">
+                        <h2>${translations[lang]?.summaryTitle || translations.en.summaryTitle}</h2>
+                        <p>${brief}</p>
+                    </div>
 
-                <div class="summary">
-                    <h2>📅 Important Information</h2>
-                    <p><strong>Published:</strong> ${new Date(policy.date).toLocaleDateString()}</p>
-                    <p><strong>State:</strong> ${policy.state}</p>
-                    <p><strong>Category:</strong> ${policy.category}</p>
-                    <p><strong>Impact Level:</strong> ${policy.impact || 'Medium'}</p>
-                </div>
-            `;
+                    <div class="summary">
+                        <h2>${translations[lang]?.impactTitle || translations.en.impactTitle}</h2>
+                        <p>${translatedImpact}</p>
+                    </div>
+
+                    <div class="summary">
+                        <h2>📅 ${await translateText('Important Information', lang)}</h2>
+                        <p><strong>${await translateText('Published', lang)}:</strong> ${new Date(policy.date).toLocaleDateString()}</p>
+                        <p><strong>${await translateText('State', lang)}:</strong> ${state}</p>
+                        <p><strong>${await translateText('Category', lang)}:</strong> ${category}</p>
+                        <p><strong>${await translateText('Impact Level', lang)}:</strong> ${await translateText(policy.impact || 'Medium', lang)}</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error displaying policy:', error);
+                content.innerHTML = `<p>Error displaying policy details</p>`;
+            }
         }
 
         loadPolicy();

@@ -490,9 +490,62 @@
         };
 
         // Add translations for other languages (kn, mr, ta) - abbreviated for space
-        translations.kn = { ...translations.en }; // Use English as fallback
-        translations.mr = { ...translations.en };
-        translations.ta = { ...translations.en };
+        translations.kn = {
+            pageTitle: 'ಲಾಸ್ಟ್-ಮೈಲ್ ಟ್ರಾನ್ಸ್ಲೇಟರ್ - ಸರ್ಕಾರಿ ನೀತಿ ನವೀಕರಣಗಳು',
+            breaking: '🔴 ತಾಜಾ ಸುದ್ದಿ',
+            tickerText: 'ಹೊಸ ನೀತಿಗಳು ನವೀಕರಿಸಲಾಗಿದೆ • ಮಹಾರಾಷ್ಟ್ರ ಕೃಷಿ ಸಬ್ಸಿಡಿ ಹೆಚ್ಚಳ • ಕರ್ನಾಟಕ MSME ಪ್ರಯೋಜನಗಳು ವಿಸ್ತರಿಸಲಾಗಿದೆ',
+            title: '🌐 ಸರ್ಕಾರಿ ನೀತಿ ನವೀಕರಣಗಳು',
+            subtitle: 'ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ನೈಜ-ಸಮಯ ನೀತಿ ಅಧಿಸೂಚನೆಗಳು',
+            uploadBtn: '📄 ದಾಖಲೆ ಅಪ್ಲೋಡ್ ಮಾಡಿ',
+            subscribe: '📱 SMS ಗಾಗಿ ಚಂದಾದಾರರಾಗಿ',
+            loading: 'ನೀತಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...',
+            subscribeTitle: '📱 SMS ಎಚ್ಚರಿಕೆಗಳಿಗೆ ಚಂದಾದಾರರಾಗಿ',
+            subscribeDesc: 'ನಿಮ್ಮ ಆದ್ಯತೆಗಳಿಗೆ ಹೊಂದಿಕೆಯಾಗುವ ಹೊಸ ನೀತಿಗಳು ಪ್ರಕಟವಾದಾಗ ಸೂಚಿಸಲಾಗುತ್ತದೆ',
+            phonePlaceholder: '+91XXXXXXXXXX',
+            submitBtn: 'ಈಗ ಚಂದಾದಾರರಾಗಿ',
+            phoneError: 'ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ',
+            categoryError: 'ದಯವಿಟ್ಟು ಕನಿಷ್ಠ ಒಂದು ವರ್ಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ',
+            subscribeSuccess: 'ಯಶಸ್ವಿಯಾಗಿ ಚಂದಾದಾರರಾಗಿದ್ದೀರಿ! ನಿಮ್ಮ ಆದ್ಯತೆಗಳಿಗೆ ಹೊಂದಿಕೆಯಾಗುವ ಹೊಸ ನೀತಿಗಳಿಗಾಗಿ ನೀವು SMS ಎಚ್ಚರಿಕೆಗಳನ್ನು ಸ್ವೀಕರಿಸುತ್ತೀರಿ।',
+            subscribeFailed: 'ಚಂದಾದಾರಿಕೆ ವಿಫಲವಾಗಿದೆ: '
+        };
+        
+        translations.mr = {
+            pageTitle: 'लास्ट-माइल ट्रान्सलेटर - सरकारी धोरण अद्यतने',
+            breaking: '🔴 ताज्या बातम्या',
+            tickerText: 'नवीन धोरणे अद्ययावत केली • महाराष्ट्र कृषी अनुदान वाढले • कर्नाटक MSME फायदे विस्तारित',
+            title: '🌐 सरकारी धोरण अद्यतने',
+            subtitle: 'तुमच्या भाषेत रिअल-टाइम धोरण सूचना',
+            uploadBtn: '📄 दस्तऐवज अपलोड करा',
+            subscribe: '📱 SMS साठी सदस्यता घ्या',
+            loading: 'धोरणे लोड होत आहेत...',
+            subscribeTitle: '📱 SMS अलर्टसाठी सदस्यता घ्या',
+            subscribeDesc: 'तुमच्या प्राधान्यांशी जुळणारी नवीन धोरणे प्रकाशित झाल्यावर सूचित व्हा',
+            phonePlaceholder: '+91XXXXXXXXXX',
+            submitBtn: 'आता सदस्यता घ्या',
+            phoneError: 'कृपया वैध फोन नंबर प्रविष्ट करा',
+            categoryError: 'कृपया किमान एक श्रेणी निवडा',
+            subscribeSuccess: 'यशस्वीरित्या सदस्यता घेतली! तुम्हाला तुमच्या प्राधान्यांशी जुळणाऱ्या नवीन धोरणांसाठी SMS अलर्ट प्राप्त होतील।',
+            subscribeFailed: 'सदस्यता अयशस्वी: '
+        };
+        
+        translations.ta = {
+            pageTitle: 'லாஸ்ட்-மைல் டிரான்ஸ்லேட்டர் - அரசு கொள்கை புதுப்பிப்புகள்',
+            breaking: '🔴 சமீபத்திய செய்தி',
+            tickerText: 'புதிய கொள்கைகள் புதுப்பிக்கப்பட்டன • மகாராஷ்டிரா விவசாய மானியம் அதிகரிப்பு • கர்நாடகா MSME நன்மைகள் விரிவாக்கம்',
+            title: '🌐 அரசு கொள்கை புதுப்பிப்புகள்',
+            subtitle: 'உங்கள் மொழியில் நேரடி கொள்கை அறிவிப்புகள்',
+            uploadBtn: '📄 ஆவணத்தை பதிவேற்றவும்',
+            subscribe: '📱 SMS க்கு குழுசேர்',
+            loading: 'கொள்கைகள் ஏற்றப்படுகின்றன...',
+            subscribeTitle: '📱 SMS எச்சரிக்கைகளுக்கு குழுசேர்',
+            subscribeDesc: 'உங்கள் விருப்பங்களுக்கு பொருந்தும் புதிய கொள்கைகள் வெளியிடப்படும்போது அறிவிக்கப்படும்',
+            phonePlaceholder: '+91XXXXXXXXXX',
+            submitBtn: 'இப்போது குழுசேர்',
+            phoneError: 'தயவுசெய்து சரியான தொலைபேசி எண்ணை உள்ளிடவும்',
+            categoryError: 'தயவுசெய்து குறைந்தது ஒரு வகையை தேர்ந்தெடுக்கவும்',
+            subscribeSuccess: 'வெற்றிகரமாக குழுசேர்ந்தீர்கள்! உங்கள் விருப்பங்களுக்கு பொருந்தும் புதிய கொள்கைகளுக்கான SMS எச்சரிக்கைகளைப் பெறுவீர்கள்।',
+            subscribeFailed: 'குழுசேர்தல் தோல்வியடைந்தது: '
+        };
 
         function setLanguage(lang) {
             currentLanguage = lang;
@@ -555,18 +608,81 @@
                 return;
             }
             
-            feed.innerHTML = policies.map(policy => `
-                <div class="policy-card" onclick="viewPolicy('${policy.id}')">
-                    <div class="policy-title">${policy.title}</div>
-                    <div class="policy-meta">
-                        <span class="tag tag-state">${policy.state}</span>
-                        <span class="tag tag-category">${policy.category}</span>
-                        <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
-                        ${isNew(policy.date) ? '<span class="tag tag-new">NEW</span>' : ''}
+            if (currentLanguage === 'en') {
+                feed.innerHTML = policies.map(policy => `
+                    <div class="policy-card" onclick="viewPolicy('${policy.id}')">
+                        <div class="policy-title">${policy.title}</div>
+                        <div class="policy-meta">
+                            <span class="tag tag-state">${policy.state}</span>
+                            <span class="tag tag-category">${policy.category}</span>
+                            <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                            ${isNew(policy.date) ? '<span class="tag tag-new">NEW</span>' : ''}
+                        </div>
+                        <p class="policy-brief">${policy.brief}</p>
                     </div>
-                    <p class="policy-brief">${policy.brief}</p>
-                </div>
-            `).join('');
+                `).join('');
+            } else {
+                // Show loading state
+                feed.innerHTML = '<div class="loading"><div class="spinner"></div><p>Translating policies...</p></div>';
+                
+                try {
+                    const translatedPolicies = await Promise.all(policies.map(async policy => {
+                        try {
+                            const response = await fetch(`${API_URL}/api/translate`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    text: `${policy.title}|||${policy.brief}|||${policy.state}|||${policy.category}`,
+                                    language: currentLanguage
+                                })
+                            });
+                            const data = await response.json();
+                            if (data.success && data.translation) {
+                                const parts = data.translation.split('|||');
+                                return { 
+                                    ...policy, 
+                                    title: parts[0] || policy.title,
+                                    brief: parts[1] || policy.brief,
+                                    state: parts[2] || policy.state,
+                                    category: parts[3] || policy.category
+                                };
+                            }
+                            return policy;
+                        } catch (err) {
+                            console.error('Translation error for policy:', policy.id, err);
+                            return policy;
+                        }
+                    }));
+                    
+                    feed.innerHTML = translatedPolicies.map(policy => `
+                        <div class="policy-card" onclick="viewPolicy('${policy.id}')">
+                            <div class="policy-title">${policy.title}</div>
+                            <div class="policy-meta">
+                                <span class="tag tag-state">${policy.state}</span>
+                                <span class="tag tag-category">${policy.category}</span>
+                                <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                                ${isNew(policy.date) ? '<span class="tag tag-new">NEW</span>' : ''}
+                            </div>
+                            <p class="policy-brief">${policy.brief}</p>
+                        </div>
+                    `).join('');
+                } catch (error) {
+                    console.error('Failed to translate policies:', error);
+                    // Fallback to English
+                    feed.innerHTML = policies.map(policy => `
+                        <div class="policy-card" onclick="viewPolicy('${policy.id}')">
+                            <div class="policy-title">${policy.title}</div>
+                            <div class="policy-meta">
+                                <span class="tag tag-state">${policy.state}</span>
+                                <span class="tag tag-category">${policy.category}</span>
+                                <span class="tag tag-date">${new Date(policy.date).toLocaleDateString()}</span>
+                                ${isNew(policy.date) ? '<span class="tag tag-new">NEW</span>' : ''}
+                            </div>
+                            <p class="policy-brief">${policy.brief}</p>
+                        </div>
+                    `).join('');
+                }
+            }
         }
 
         function isNew(dateString) {
@@ -616,21 +732,26 @@
             const states = Array.from(stateSelect.selectedOptions).map(opt => opt.value);
 
             try {
+                const requestBody = {
+                    phone: phone,
+                    demographics: { 
+                        phoneNumber: phone, 
+                        languages: [currentLanguage],
+                        states: states
+                    },
+                    subscriptions: { 
+                        documentTypes: categories, 
+                        deliveryMethod: 'sms', 
+                        frequency: 'immediate' 
+                    }
+                };
+
+                console.log('Subscribing with:', requestBody);
+
                 const response = await fetch(`${API_URL}/api/users/profile`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        demographics: { 
-                            phoneNumber: phone, 
-                            languages: [currentLanguage],
-                            states: states
-                        },
-                        subscriptions: { 
-                            documentTypes: categories, 
-                            deliveryMethod: 'sms', 
-                            frequency: 'immediate' 
-                        }
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
                 const data = await response.json();
@@ -643,6 +764,7 @@
                     throw new Error(data.error || 'Subscription failed');
                 }
             } catch (error) {
+                console.error('Subscription error:', error);
                 alert(translations[currentLanguage].subscribeFailed + error.message);
             }
         }
